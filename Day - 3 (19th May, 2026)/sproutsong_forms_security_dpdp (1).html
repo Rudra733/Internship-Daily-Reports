@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SproutSong — Form Security & DPDP Guide</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a18;line-height:1.6;font-size:15px}
+.header{background:#1a1a18;color:#f5f5f0;padding:28px 32px 24px}
+.header h1{font-size:22px;font-weight:600;margin-bottom:4px}
+.header p{font-size:13px;color:#9c9a92}
+.container{max-width:960px;margin:0 auto;padding:24px 20px}
+.form-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.ftab{padding:8px 18px;border:1px solid #c8c6bc;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:#5f5e5a;transition:all .15s}
+.ftab.active{background:#1a1a18;color:#f5f5f0;border-color:#1a1a18}
+.form-section{display:none}.form-section.active{display:block}
+.sub-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid #e8e6de;padding-bottom:10px}
+.stab{padding:5px 13px;border-radius:6px;font-size:12px;cursor:pointer;background:transparent;color:#73726c;border:1px solid transparent;transition:all .15s}
+.stab.active{background:#185fa5;color:#fff}
+.sub-section{display:none}.sub-section.active{display:block}
+.card{background:#fff;border:1px solid #dddbd3;border-radius:12px;padding:16px 20px;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:600;color:#1a1a18;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-body{font-size:13px;color:#5f5e5a;line-height:1.7}
+.badge{font-size:11px;padding:2px 9px;border-radius:6px;font-weight:600;white-space:nowrap}
+.badge-red{background:#fce8e8;color:#7a2020}
+.badge-amber{background:#fef3da;color:#6b4010}
+.badge-green{background:#e8f5e9;color:#1b5e20}
+.badge-blue{background:#e3f0fb;color:#0c3d6b}
+.inv-block{background:#f8f7f2;border-left:3px solid #378add;border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:10px}
+.inv-q{font-size:12px;font-weight:600;color:#73726c;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+.inv-a{font-size:13px;color:#1a1a18;line-height:1.65}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.metric{background:#f8f7f2;border-radius:8px;padding:12px;text-align:center}
+.metric-val{font-size:18px;font-weight:600}
+.metric-lbl{font-size:11px;color:#73726c;margin-top:2px}
+.warning-box{background:#fef3da;border:1px solid #f5c842;border-radius:8px;padding:12px 16px;font-size:13px;color:#6b4010;margin-bottom:12px;line-height:1.65}
+.info-box{background:#e3f0fb;border:1px solid #b5d4f4;border-radius:8px;padding:12px 16px;font-size:13px;color:#0c3d6b;margin-bottom:12px;line-height:1.65}
+.danger-box{background:#fce8e8;border:1px solid #f0b0b0;border-radius:8px;padding:12px 16px;font-size:13px;color:#7a2020;margin-bottom:12px;line-height:1.65}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+th{background:#f8f7f2;color:#5f5e5a;font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid #dddbd3}
+td{padding:7px 12px;border-bottom:1px solid #f0ede6;vertical-align:top;line-height:1.55}
+tr:last-child td{border-bottom:none}
+.tag{font-size:10.5px;padding:2px 7px;border-radius:5px;display:inline-block;margin:1.5px;font-weight:500}
+.tag-pii{background:#fce8e8;color:#7a2020}
+.tag-spii{background:#fef3da;color:#6b4010}
+.tag-enc{background:#e3f0fb;color:#0c3d6b}
+.tag-hash{background:#e8f5e9;color:#1b5e20}
+.tag-val{background:#f1efe8;color:#444441}
+.tag-child{background:#ede8fc;color:#3b2f8c}
+.tag-opt{background:#e1f5ee;color:#085041}
+ul.cl{list-style:none;margin-top:10px}
+ul.cl li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #f0ede6;font-size:13px;color:#5f5e5a;line-height:1.55}
+ul.cl li:last-child{border-bottom:none}
+ul.cl li::before{content:"→";color:#378add;flex-shrink:0;font-weight:700;margin-top:1px}
+pre{background:#1a1a18;color:#c8c6bc;border-radius:10px;padding:16px;font-size:11.5px;line-height:1.75;overflow-x:auto;margin-top:10px;white-space:pre-wrap;word-break:break-word}
+code{font-family:'SF Mono',Menlo,monospace}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}.form-tabs{gap:5px}.ftab{padding:6px 12px;font-size:12px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>SproutSong — Form Security &amp; DPDP Compliance Guide</h1>
+  <p>Demo Request · Counselling · AI Workshop · Contact Us &nbsp;|&nbsp; Security Engineering &amp; DPDP Act 2023</p>
+</div>
+<div class="container">
+
+<div class="form-tabs">
+  <button class="ftab active" onclick="switchForm('dr')">🏫 Demo Request form</button>
+  <button class="ftab" onclick="switchForm('cf')">📋 Counselling form</button>
+  <button class="ftab" onclick="switchForm('wf')">🤖 AI Workshop form</button>
+  <button class="ftab" onclick="switchForm('cu')">✉️ Contact Us form</button>
+</div>
+
+<!-- ======================== DEMO REQUEST FORM ======================== -->
+<div class="form-section active" id="form-dr">
+  <div class="info-box"><strong>ℹ Medium-risk form.</strong> Collects school-level institutional PII and contact person data. No student data. Primary purpose: scheduling product demonstrations for schools. URL: <strong>https://auth.sproutsong.com/request-demo</strong></div>
+  <div class="sub-tabs">
+    <button class="stab active" onclick="switchSub('dr','inv')">📦 Data inventory</button>
+    <button class="stab" onclick="switchSub('dr','classify')">🏷 Field classification</button>
+    <button class="stab" onclick="switchSub('dr','security')">🛡 Security measures</button>
+    <button class="stab" onclick="switchSub('dr','dpdp')">📜 DPDP obligations</button>
+  </div>
+
+  <!-- INVENTORY — answers to the 5 questions -->
+  <div class="sub-section active" id="dr-inv">
+    <div class="inv-block">
+      <div class="inv-q">What data do we collect?</div>
+      <div class="inv-a">
+        <strong>School identity:</strong> schoolName, trustName (optional), schoolEmail, schoolPhone, schoolLogo (URL).<br><br>
+        <strong>Contact person:</strong> contactPerson (name), contactEmail, contactDesignation, primaryContact (phone), altMobile (optional).<br><br>
+        <strong>School profile:</strong> state, city, type (Primary/Secondary/Higher Secondary/K-12), board (CBSE/ICSE/SSC/IB/Cambridge/Other), medium, numberOfStudents, pedagogyType.<br><br>
+        <strong>Demo preferences:</strong> preferredDate, preferredTime, demoPreference, followUpMode, notes (free text).<br><br>
+        <strong>Server metadata:</strong> status, adminStatus, scheduledAt, submittedAt, consentGiven, consentTimestamp, consentIP.
+      </div>
+    </div>
+
+    <div class="inv-block">
+      <div class="inv-q">Why do we collect it?</div>
+      <div class="inv-a">
+        <strong>School identity &amp; profile</strong> → To identify the school, assess fit for SproutSong's product, and personalise the demo content to the school's board, medium, and pedagogy.<br><br>
+        <strong>Contact person details</strong> → To reach the right decision-maker at the school and schedule the demo session via their preferred contact channel.<br><br>
+        <strong>Demo preferences</strong> → To match available slots, confirm the appointment, and follow up appropriately. Notes allow the school to communicate specific needs.<br><br>
+        <strong>Metadata (status, adminStatus)</strong> → Internal CRM-style tracking for SproutSong's sales/demo team to manage the pipeline from "New" to "Demo Done".<br><br>
+        <em>No data is collected for advertising, profiling, or third-party sharing.</em>
+      </div>
+    </div>
+
+    <div class="inv-block">
+      <div class="inv-q">Where is it stored?</div>
+      <div class="inv-a">
+        <strong>Primary store:</strong> MongoDB — <code>demoRequests</code> collection. All form fields are stored here as a single document per submission.<br><br>
+        <strong>PII fields at rest:</strong> schoolEmail, schoolPhone, contactPerson, contactEmail, primaryContact, altMobile are encrypted using field-level encryption (mongoose-field-encryption or MongoDB CSFLE) with a 32-byte key stored in environment variables — never in the codebase.<br><br>
+        <strong>schoolLogo:</strong> If a URL string, stored as-is (validated format only). If file upload is added in future, files must go to a private cloud bucket (AWS S3 / GCS), never a public /uploads folder.<br><br>
+        <strong>No data is stored in browser localStorage, cookies, or third-party analytics tools.</strong> Server logs must mask email and phone fields before writing to any log stream (CloudWatch, Papertrail, etc.).
+      </div>
+    </div>
+
+    <div class="inv-block">
+      <div class="inv-q">Who can access it?</div>
+      <div class="inv-a">
+        <strong>SproutSong demo/sales team</strong> → Read + update access to assigned records (adminStatus, scheduledAt, notes). Cannot delete records without super admin approval.<br><br>
+        <strong>SproutSong super admin</strong> → Full CRUD access. Can export, bulk update status, and process deletion requests.<br><br>
+        <strong>School contact person (submitter)</strong> → No portal access. They receive an email confirmation only. They can request data deletion via privacy@sproutsong.com.<br><br>
+        <strong>No access for:</strong> other schools, students, parents, third-party vendors, or advertising platforms.<br><br>
+        <strong>Access enforcement:</strong> All access must go through the authenticated API with JWT-based role checks. No direct MongoDB access for any team member in production. Admin panel routes must require role: "admin" or role: "sales" middleware.
+      </div>
+    </div>
+
+    <div class="inv-block">
+      <div class="inv-q">How long do we keep it?</div>
+      <div class="inv-a">
+        <strong>Submitted &amp; active records</strong> → Retained for 12 months after the last interaction (last status change or scheduled demo date), then auto-deleted.<br><br>
+        <strong>Draft records</strong> (status = "draft", never fully submitted) → Auto-deleted after <strong>30 days</strong> via MongoDB TTL index on <code>createdAt</code>.<br><br>
+        <strong>Closed / rejected records</strong> (status = "Closed") → Retained for 6 months for audit trail, then purged.<br><br>
+        <strong>On deletion request:</strong> Hard-delete the document within <strong>72 hours</strong> of a valid request from privacy@sproutsong.com. Send written confirmation to the requester.<br><br>
+        <strong>Anonymised aggregate data</strong> (city, board, type counts — no PII) may be retained indefinitely for product analytics.
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="metric"><div class="metric-val" style="color:#e67e22">Medium</div><div class="metric-lbl">DPDP risk level</div></div>
+      <div class="metric"><div class="metric-val" style="color:#185fa5">Institutional + Contact PII</div><div class="metric-lbl">School &amp; staff data</div></div>
+    </div>
+  </div>
+
+  <!-- FIELD CLASSIFICATION -->
+  <div class="sub-section" id="dr-classify">
+    <div class="card">
+      <div class="card-title">Field-level classification — all sections</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">
+        <span class="tag tag-pii">PII — encrypt</span>
+        <span class="tag tag-enc">Mask in logs</span>
+        <span class="tag tag-val">Validate strictly</span>
+        <span class="tag tag-opt">Low risk</span>
+        <span class="tag tag-spii">XSS risk — sanitize</span>
+      </div>
+      <table>
+        <thead><tr><th>Field</th><th>Classification</th><th>Action required</th></tr></thead>
+        <tbody>
+          <tr><td><code>schoolName</code></td><td><span class="tag tag-pii">PII</span></td><td>trim, escape, max 200 chars, validate</td></tr>
+          <tr><td><code>trustName</code></td><td><span class="tag tag-pii">PII</span></td><td>optional, trim, escape, max 200 chars</td></tr>
+          <tr><td><code>schoolEmail</code></td><td><span class="tag tag-pii">PII</span> <span class="tag tag-enc">mask logs</span></td><td>validate email format, normalizeEmail, encrypt at rest</td></tr>
+          <tr><td><code>schoolPhone</code></td><td><span class="tag tag-pii">PII</span> <span class="tag tag-enc">mask logs</span></td><td>Indian phone regex, encrypt at rest</td></tr>
+          <tr><td><code>schoolLogo</code></td><td><span class="tag tag-val">validate URL</span></td><td>regex URL format, http/https only, no SSRF — never server-fetch</td></tr>
+          <tr><td><code>contactPerson</code></td><td><span class="tag tag-pii">PII</span> <span class="tag tag-enc">mask logs</span></td><td>trim, escape, max 100 chars, encrypt at rest</td></tr>
+          <tr><td><code>contactEmail</code></td><td><span class="tag tag-pii">PII</span> <span class="tag tag-enc">mask logs</span></td><td>validate email format, normalizeEmail, encrypt at rest</td></tr>
+          <tr><td><code>contactDesignation</code></td><td><span class="tag tag-val">validate</span> <span class="tag tag-opt">low risk</span></td><td>enum only — reject free text</td></tr>
+          <tr><td><code>primaryContact</code></td><td><span class="tag tag-pii">PII</span> <span class="tag tag-enc">mask logs</span></td><td>Indian phone regex, encrypt at rest</td></tr>
+          <tr><td><code>altMobile</code></td><td><span class="tag tag-pii">PII</span> <span class="tag tag-enc">mask logs</span></td><td>optional, same as primaryContact</td></tr>
+          <tr><td><code>state / city</code></td><td><span class="tag tag-val">validate</span> <span class="tag tag-opt">low risk</span></td><td>dropdown enum, no free text</td></tr>
+          <tr><td><code>type / board / medium</code></td><td><span class="tag tag-val">validate</span> <span class="tag tag-opt">low risk</span></td><td>enum validated — reject unlisted values</td></tr>
+          <tr><td><code>pedagogyType</code></td><td><span class="tag tag-val">validate</span> <span class="tag tag-opt">low risk</span></td><td>enum validated</td></tr>
+          <tr><td><code>preferredDate</code></td><td><span class="tag tag-val">validate</span> <span class="tag tag-opt">low risk</span></td><td>ISO8601, must be future date</td></tr>
+          <tr><td><code>preferredTime</code></td><td><span class="tag tag-val">validate</span> <span class="tag tag-opt">low risk</span></td><td>time format validation</td></tr>
+          <tr><td><code>notes</code></td><td><span class="tag tag-spii">XSS risk</span></td><td>strip HTML, escape, max 1000 chars, never render raw</td></tr>
+          <tr><td><code>status</code></td><td><span class="tag tag-opt">server-set only</span></td><td>hardcode "draft" on creation — reject from client</td></tr>
+          <tr><td><code>adminStatus</code></td><td><span class="tag tag-opt">server-set only</span></td><td>admin panel only — use .not().exists() on public route</td></tr>
+          <tr><td><code>scheduledAt</code></td><td><span class="tag tag-opt">server-set only</span></td><td>set by admin only, never accept from form submission</td></tr>
+          <tr><td><code>consentGiven</code></td><td><span class="tag tag-pii">required</span></td><td>must be true — reject submission if false</td></tr>
+          <tr><td><code>consentTimestamp</code></td><td><span class="tag tag-opt">server-set only</span></td><td>Date.now() on server — never accept from client</td></tr>
+          <tr><td><code>consentIP</code></td><td><span class="tag tag-opt">server-set only</span></td><td>req.ip on server — never accept from client</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECURITY MEASURES -->
+  <div class="sub-section" id="dr-security">
+    <div class="card">
+      <div class="card-title">🛡 Critical security measures</div>
+      <ul class="cl">
+        <li><div><strong>Server-side validation — allowlist approach.</strong> Use express-validator to validate every field. Reject any field not in the schema using <code>strict: true</code> on Mongoose and <code>.not().exists()</code> for admin-only fields. Never trust frontend validation alone.</div></li>
+        <li><div><strong>NoSQL injection prevention.</strong> Add express-mongo-sanitize as global middleware before all routes. This strips <code>$</code> and <code>.</code> operators from all inputs, preventing MongoDB operator injection via email or phone fields.</div></li>
+        <li><div><strong>Field-level encryption for PII.</strong> Apply mongoose-field-encryption to schoolEmail, schoolPhone, contactPerson, contactEmail, primaryContact, altMobile. Use a 32-byte key from environment variables. Never store plain-text contact data.</div></li>
+        <li><div><strong>adminStatus &amp; scheduledAt — reject from client.</strong> Use <code>body('adminStatus').not().exists()</code> and <code>body('scheduledAt').not().exists()</code> in the public POST route. Hardcode <code>status: 'draft'</code> on every new submission.</div></li>
+        <li><div><strong>notes field — sanitize XSS.</strong> This free-text field renders in the admin panel. An attacker can submit a script tag to execute in admin's browser (stored XSS). Escape with <code>.escape()</code> on input. Use DOMPurify in the admin frontend before rendering.</div></li>
+        <li><div><strong>schoolLogo URL — no server-side fetching.</strong> If the backend ever fetches the submitted logo URL to validate or cache it, an attacker can send an internal IP (e.g. 169.254.169.254) to probe cloud metadata (SSRF). Validate format only — never server-fetch a user-submitted URL.</div></li>
+        <li><div><strong>Rate limiting: 5 submissions per IP per hour.</strong> Use express-rate-limit backed by Redis. Return HTTP 429 on breach. Prevents automated spam and database flooding.</div></li>
+        <li><div><strong>CAPTCHA — reCAPTCHA v3 or Cloudflare Turnstile.</strong> Public form with no authentication. Validate the CAPTCHA token server-side before processing any submission.</div></li>
+        <li><div><strong>CORS: restrict to auth.sproutsong.com only.</strong> No wildcard <code>*</code> origin. Reject all other origins at the API level.</div></li>
+        <li><div><strong>Duplicate detection.</strong> Index on schoolEmail. If the same email submits within 24 hours, return the same generic success response — do not create a duplicate record and do not reveal the duplicate to the caller.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DPDP OBLIGATIONS -->
+  <div class="sub-section" id="dr-dpdp">
+    <div class="card">
+      <div class="card-title">📜 DPDP Act obligations — Demo Request form</div>
+      <ul class="cl">
+        <li><div><strong>Consent checkbox — unchecked by default, required.</strong> Add: "I consent to SproutSong collecting and processing the above information to schedule a product demonstration and for follow-up communication. I understand I can withdraw this consent by emailing privacy@sproutsong.com." Block form submission if unchecked. Store consentGiven, consentTimestamp, consentIP.</div></li>
+        <li><div><strong>Link to Privacy Notice.</strong> The consent checkbox must link to a published Privacy Policy stating: what is collected, why, retention period, who can access it, and how to request deletion.</div></li>
+        <li><div><strong>Purpose limitation.</strong> Data collected here must only be used for demo scheduling and follow-up. It must not be added to a marketing list, shared with third parties, or used for advertising without explicit separate consent.</div></li>
+        <li><div><strong>Right to erasure.</strong> Provide privacy@sproutsong.com as the deletion contact. Hard-delete the record within 72 hours of a valid request. Send written confirmation.</div></li>
+        <li><div><strong>Retention periods.</strong> Draft: 30 days (TTL index). Submitted/active: 12 months after last interaction. Closed: 6 months then purge.</div></li>
+        <li><div><strong>PII masking in logs.</strong> schoolEmail, contactEmail, primaryContact, altMobile must never appear in plain text in server logs or error messages. Use a log serializer that masks these fields before writing to any log stream.</div></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Consent text to add to the form</div>
+      <pre>// Checkbox — unchecked by default, required
+"By submitting this form, I confirm that the information provided 
+is accurate and I consent to SproutSong processing this data to 
+schedule a product demonstration, contact me for follow-up, and 
+assess fit for SproutSong's services.
+
+I understand that:
+• My data will be retained for up to 12 months after last contact
+• I can request deletion by emailing privacy@sproutsong.com
+• SproutSong will not share my data with third parties for marketing
+• I can withdraw this consent at any time
+
+[Read our Privacy Policy]  [Read our Terms]"
+
+// Store in DB alongside the record:
+consentGiven:      true          (required — reject if false)
+consentTimestamp:  new Date()    (server-set)
+consentIP:         req.ip        (server-set)</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== COUNSELLING FORM ======================== -->
+<div class="form-section" id="form-cf">
+  <div class="danger-box"><strong>⚠ Highest risk form across all four.</strong> Collects student identity (minor), parent identity &amp; financial data, full home address, academic documents, and career profile. Strongest DPDP obligations — verifiable parental consent mandatory for students under 18.</div>
+  <div class="sub-tabs">
+    <button class="stab active" onclick="switchSub('cf','inv')">📦 Data inventory</button>
+    <button class="stab" onclick="switchSub('cf','classify')">🏷 Field classification</button>
+    <button class="stab" onclick="switchSub('cf','security')">🛡 Security measures</button>
+    <button class="stab" onclick="switchSub('cf','dpdp')">📜 DPDP obligations</button>
+    <button class="stab" onclick="switchSub('cf','code')">💻 Code</button>
+  </div>
+
+  <div class="sub-section active" id="cf-inv">
+    <div class="inv-block"><div class="inv-q">What data do we collect?</div><div class="inv-a">Student identity — fullName, dob, gender, mobile, email, photoPath. Parent identity &amp; financial — fatherName, motherName, fatherContact, fatherEmail, fatherOccupation, motherOccupation, fatherIncome (optional), motherIncome (optional). Full home address — house, landmark, village, city, district, state, pincode. Academic data — standard, board, school, medium, year, stream, scienceGroup, percentage. Academic documents — std8FilePath, std9FilePath, std10FilePath, std11FilePath, std12FilePath. Career preferences — interests, preferredCity, preferredCollege, budget. Query and referral source — query, howHeard.</div></div>
+    <div class="inv-block"><div class="inv-q">Why do we collect it?</div><div class="inv-a">For personalised educational and career counselling — to assess the student's academic background, family context, financial constraints, and career aspirations, and to provide tailored guidance. Marksheets verify academic claims and enable accurate stream/college recommendations.</div></div>
+    <div class="inv-block"><div class="inv-q">Where is it stored?</div><div class="inv-a">Core form data → MongoDB (counsellingRequests collection). File paths (std8–std12FilePath, photoPath) → MongoDB stores only the storage key/path string. Actual files → private cloud storage bucket (AWS S3 / Azure Blob / GCS) — never a public folder. Access to files only via server-generated signed URLs with 15-minute expiry.</div></div>
+    <div class="inv-block"><div class="inv-q">Who can access it?</div><div class="inv-a">Assigned counsellor — read/write access to their own assigned cases only. School admin — read access to their school's submissions. SproutSong super admin — platform-level management. Parent/guardian — can request their child's record via privacy@sproutsong.com. No cross-student, cross-school access. No direct DB access for any role — always via authenticated API with RBAC checks.</div></div>
+    <div class="inv-block"><div class="inv-q">How long do we keep it?</div><div class="inv-a">Active counselling + 24 months after case closure. Draft/incomplete records: auto-delete after 30 days (MongoDB TTL index). Uploaded documents: same period as record, then securely purged from storage bucket. Financial data (fatherIncome, motherIncome): retain only for active counselling period — null these fields on case closure or on deletion request. All data: delete within 72 hours of a valid erasure request.</div></div>
+    <div class="grid2">
+      <div class="metric"><div class="metric-val" style="color:#c0392b">Very High</div><div class="metric-lbl">DPDP risk level</div></div>
+      <div class="metric"><div class="metric-val" style="color:#6b4010">Children's data</div><div class="metric-lbl">Verifiable parental consent required</div></div>
+    </div>
+  </div>
+
+  <div class="sub-section" id="cf-classify">
+    <div class="card">
+      <div class="card-title">Field-level classification — all 7 sections</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+        <span class="tag tag-child">Minor PII — children's data</span>
+        <span class="tag tag-pii">PII — encrypt</span>
+        <span class="tag tag-spii">Sensitive PII — financial</span>
+        <span class="tag tag-enc">Mask in logs</span>
+        <span class="tag tag-hash">Private storage + signed URL</span>
+        <span class="tag tag-val">Validate + sanitize</span>
+        <span class="tag tag-opt">Low risk</span>
+      </div>
+      <table>
+        <thead><tr><th>Field</th><th>Section</th><th>Classification &amp; Action</th></tr></thead>
+        <tbody>
+          <tr><td><code>fullName</code></td><td>1</td><td><span class="tag tag-child">minor PII</span> <span class="tag tag-enc">mask logs</span> max 100 chars, trim, escape</td></tr>
+          <tr><td><code>dob</code></td><td>1</td><td><span class="tag tag-child">minor PII</span> <span class="tag tag-val">validate date, derive isMinor server-side</span></td></tr>
+          <tr><td><code>gender</code></td><td>1</td><td><span class="tag tag-child">minor PII</span> <span class="tag tag-val">enum: male/female/other only</span></td></tr>
+          <tr><td><code>mobile</code></td><td>1</td><td><span class="tag tag-child">minor PII</span> <span class="tag tag-enc">mask logs</span> <span class="tag tag-val">Indian phone regex</span></td></tr>
+          <tr><td><code>email</code></td><td>1</td><td><span class="tag tag-child">minor PII</span> <span class="tag tag-enc">mask logs</span> <span class="tag tag-val">validate format</span></td></tr>
+          <tr><td><code>photoPath</code></td><td>1</td><td><span class="tag tag-child">minor PII</span> <span class="tag tag-hash">private bucket, signed URL, UUID filename</span></td></tr>
+          <tr><td><code>fatherName, motherName</code></td><td>2</td><td><span class="tag tag-pii">parent PII</span> <span class="tag tag-enc">mask logs</span></td></tr>
+          <tr><td><code>fatherContact</code></td><td>2</td><td><span class="tag tag-pii">parent PII</span> <span class="tag tag-enc">mask logs</span> <span class="tag tag-val">phone regex</span></td></tr>
+          <tr><td><code>fatherEmail</code></td><td>2</td><td><span class="tag tag-pii">parent PII</span> <span class="tag tag-enc">mask logs</span> <span class="tag tag-val">email validate</span></td></tr>
+          <tr><td><code>fatherIncome, motherIncome</code></td><td>2</td><td><span class="tag tag-spii">financial data</span> <span class="tag tag-enc">encrypt at rest</span> null on case closure</td></tr>
+          <tr><td><code>fatherOccupation, motherOccupation</code></td><td>2</td><td><span class="tag tag-pii">parent PII</span> <span class="tag tag-val">enum/dropdown validated</span></td></tr>
+          <tr><td><code>house, landmark, village</code></td><td>3</td><td><span class="tag tag-pii">address PII</span> <span class="tag tag-enc">mask logs</span></td></tr>
+          <tr><td><code>city, district, state, pincode</code></td><td>3</td><td><span class="tag tag-pii">address PII</span> <span class="tag tag-val">validate + dropdown for city</span></td></tr>
+          <tr><td><code>standard, board, medium, year</code></td><td>4</td><td><span class="tag tag-val">enum validated</span> <span class="tag tag-opt">low risk</span></td></tr>
+          <tr><td><code>school, stream, scienceGroup</code></td><td>4</td><td><span class="tag tag-val">validate, enum for stream</span></td></tr>
+          <tr><td><code>std8–std12FilePath</code></td><td>5</td><td><span class="tag tag-child">academic document</span> <span class="tag tag-hash">private bucket, signed URL, UUID, MIME validate</span></td></tr>
+          <tr><td><code>percentage</code></td><td>5</td><td><span class="tag tag-val">numeric 0–100, optional</span></td></tr>
+          <tr><td><code>interests, preferredCity, preferredCollege, budget</code></td><td>6</td><td><span class="tag tag-child">career profile</span> <span class="tag tag-val">enum/validate, max length</span></td></tr>
+          <tr><td><code>query, howHeard</code></td><td>7</td><td><span class="tag tag-val">sanitize XSS, max 1000 chars</span></td></tr>
+          <tr><td><code>status, submittedAt</code></td><td>7</td><td><span class="tag tag-opt">server-set only — reject from client</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sub-section" id="cf-security">
+    <div class="card">
+      <div class="card-title">🛡 Critical security measures</div>
+      <ul class="cl">
+        <li><div><strong>File upload security (std8–std12, photoPath) — highest priority.</strong> Accept only PDF, JPG, PNG. Validate MIME type server-side — never trust file extension alone. Max 5 MB per file. Rename to UUID on save (e.g. <code>a3f9b2.pdf</code>). Store in private bucket — never public /uploads. Serve via signed URL with 15-minute expiry. Scan for malware before storage (ClamAV or cloud-native scanning).</div></li>
+        <li><div><strong>IDOR protection on file access.</strong> When a counsellor requests a file (GET /files/:referenceId/:field), verify server-side that the requesting counsellor's assignedCases includes this referenceId. Never serve a file by path or filename alone — always cross-check ownership.</div></li>
+        <li><div><strong>Encrypt financial data at rest.</strong> fatherIncome and motherIncome are sensitive financial PII. Apply field-level encryption in MongoDB (mongoose-field-encryption or MongoDB CSFLE). Never return these in API responses unless the requester is an authorised counsellor/admin. Never log them.</div></li>
+        <li><div><strong>referenceId must be server-generated only.</strong> Generate server-side using UUID v4 or nanoid. Use .not().exists() in express-validator. A client-submitted referenceId could overwrite another student's record.</div></li>
+        <li><div><strong>isMinor flag — derive from dob, never accept from client.</strong> Calculate age server-side. If under 18, set isMinor: true on the document. Enforce parentConsentGiven: true before saving minor records.</div></li>
+        <li><div><strong>Cascade delete — DB + files.</strong> On erasure request, delete the MongoDB document AND all associated files from the storage bucket. A DB deletion that leaves orphaned files is an incomplete erasure under DPDP.</div></li>
+        <li><div><strong>Financial data nulling on case closure.</strong> When status transitions to closed/counselled, run a server-side update to null fatherIncome and motherIncome. This is data minimisation in practice.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sub-section" id="cf-dpdp">
+    <div class="card">
+      <div class="card-title">📜 DPDP Act obligations</div>
+      <div class="warning-box"><strong>Children's data:</strong> Students are likely under 18. DPDP Act requires verifiable parental/guardian consent. A simple checkbox is not sufficient — the parent must actively confirm their identity as guardian.</div>
+      <ul class="cl">
+        <li><div><strong>Parental consent — mandatory and verifiable.</strong> Add a separate parent/guardian consent declaration. Store consent with timestamp, IP, and the parent contact field used. The form must not submit without parentConsentGiven = true when isMinor = true.</div></li>
+        <li><div><strong>No negative profiling of the child.</strong> DPDP Act restricts processing detrimental to a child's wellbeing. Never store labels like "weak academic", "dropout risk". AI-generated insights must use constructive, supportive language only.</div></li>
+        <li><div><strong>No advertising profiling on children's data.</strong> interests, preferredCollege, and budget must never be used for targeted advertising. Counselling purpose only.</div></li>
+        <li><div><strong>Financial data minimisation.</strong> fatherIncome and motherIncome should be nulled on case closure. Document this in your Privacy Policy under "data minimisation".</div></li>
+        <li><div><strong>Purpose limitation for documents.</strong> Uploaded marksheets must only be used for counselling assessment. They must not be shared with colleges, third parties, or used for any other purpose without explicit separate consent.</div></li>
+        <li><div><strong>Right to erasure for guardian.</strong> Parent/guardian can request full deletion — DB record + all files. Process within 72 hours. Use referenceId or email as the lookup key.</div></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Consent text to add to the form</div>
+      <pre>// Two consent checkboxes — both unchecked by default
+
+CONSENT 1 — Parent/Guardian (mandatory for minors):
+"I confirm I am the parent/legal guardian of the above student.
+I consent to SproutSong processing their personal data, academic 
+records, and uploaded documents for educational career counselling 
+and academic guidance purposes only. I understand data will be 
+retained for 24 months after case closure and can be deleted by 
+emailing privacy@sproutsong.com."
+
+CONSENT 2 — Document upload:
+"I understand that uploaded marksheets and certificates contain 
+personal academic data. I consent to SproutSong using these 
+documents only for the stated counselling purpose and confirm I am 
+authorised to share them."
+
+// Store in DB:
+consentGiven: Boolean        (required)
+parentConsentGiven: Boolean  (required if isMinor = true)
+consentTimestamp: Date
+consentIP: String
+docConsentGiven: Boolean     (required if any file uploaded)</pre>
+    </div>
+  </div>
+
+  <div class="sub-section" id="cf-code">
+    <div class="card">
+      <div class="card-title">Secure file upload + IDOR protection</div>
+      <pre>import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
+const ALLOWED_MIME = ['application/pdf', 'image/jpeg', 'image/png'];
+const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+
+const upload = multer({
+  storage: multer.memoryStorage(), // never write to disk
+  limits: { fileSize: MAX_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (!ALLOWED_MIME.includes(file.mimetype))
+      return cb(new Error('Invalid file type'), false);
+    cb(null, true);
+  }
+});
+
+// Upload to private S3 bucket
+async function uploadToPrivate(file, studentId, fieldName) {
+  const ext = path.extname(file.originalname).toLowerCase();
+  const key = `counselling/${studentId}/${fieldName}/${uuidv4()}${ext}`;
+  await s3.send(new PutObjectCommand({
+    Bucket: process.env.PRIVATE_BUCKET,
+    Key: key,
+    Body: file.buffer,
+    ContentType: file.mimetype,
+    ServerSideEncryption: 'AES256',
+  }));
+  return key; // Store only the key in MongoDB — never a public URL
+}
+
+// Signed URL (15 min expiry) — IDOR-checked
+router.get('/files/:referenceId/:field', authMiddleware, async (req, res) => {
+  const record = await CounsellingRequest.findOne({ referenceId: req.params.referenceId });
+  if (!record) return res.status(404).json({ message: 'Not found' });
+  if (!req.user.assignedCases?.includes(req.params.referenceId) 
+      && req.user.role !== 'admin')
+    return res.status(403).json({ message: 'Access denied' });
+  const key = record[req.params.field];
+  if (!key) return res.status(404).json({ message: 'File not found' });
+  const url = await getSignedUrl(s3, new GetObjectCommand({
+    Bucket: process.env.PRIVATE_BUCKET, Key: key
+  }), { expiresIn: 900 });
+  res.json({ url });
+});
+
+// Age check + minor flag
+function getAge(dob) {
+  return Math.floor((Date.now() - new Date(dob)) / (365.25*24*3600*1000));
+}
+
+router.post('/counselling', upload.fields([
+  'std8FilePath','std9FilePath','std10FilePath',
+  'std11FilePath','std12FilePath','photoPath'
+].map(n=>({name:n,maxCount:1}))), async (req, res) => {
+  const age = getAge(req.body.dob);
+  const isMinor = age < 18;
+  if (isMinor && !req.body.parentConsentGiven)
+    return res.status(422).json({ message: 'Parental consent required.' });
+  const referenceId = uuidv4(); // always server-generated
+  // ... upload files, build record, save
+});</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== AI WORKSHOP FORM ======================== -->
+<div class="form-section" id="form-wf">
+  <div class="info-box"><strong>ℹ Medium-risk form.</strong> Collects teacher/staff PII (name, email, phone) and institutional data. No student data, no file uploads. Key risks: contact harvesting, spam registrations, duplicate bookings, and status field tampering.</div>
+  <div class="sub-tabs">
+    <button class="stab active" onclick="switchSub('wf','inv')">📦 Data inventory</button>
+    <button class="stab" onclick="switchSub('wf','classify')">🏷 Field classification</button>
+    <button class="stab" onclick="switchSub('wf','security')">🛡 Security measures</button>
+    <button class="stab" onclick="switchSub('wf','dpdp')">📜 DPDP obligations</button>
+    <button class="stab" onclick="switchSub('wf','code')">💻 Code</button>
+  </div>
+
+  <div class="sub-section active" id="wf-inv">
+    <div class="inv-block"><div class="inv-q">What data do we collect?</div><div class="inv-a">Staff identity — name, email, phone. Role (teacher/principal/coordinator/other). Institutional data — school name, city. Workshop preferences — preferred_date, alternative_date, teacher_count. Interests (checkbox array), free-text notes. Server metadata — status, submittedAt.</div></div>
+    <div class="inv-block"><div class="inv-q">Why do we collect it?</div><div class="inv-a">To schedule and manage AI workshop sessions for school staff — match available dates, understand group size and interest profile, and follow up with the point-of-contact registrant.</div></div>
+    <div class="inv-block"><div class="inv-q">Where is it stored?</div><div class="inv-a">MongoDB (workshopRegistrations collection). No file storage. Status and submittedAt are server-generated. referenceId is server-generated UUID.</div></div>
+    <div class="inv-block"><div class="inv-q">Who can access it?</div><div class="inv-a">SproutSong workshop coordinators and admins only. School admin sees only their school's registrations. The registrant receives an email confirmation but cannot view their record via a portal. No student access.</div></div>
+    <div class="inv-block"><div class="inv-q">How long do we keep it?</div><div class="inv-a">Confirmed/completed: 12 months after the workshop date. Pending/unconfirmed: 60 days then TTL auto-delete. Cancelled: 30 days then purge. Email and phone may be retained for future workshop notifications only if the registrant explicitly opts in to communications (separate opt-in checkbox). Otherwise, delete contact data after 12 months.</div></div>
+    <div class="grid2">
+      <div class="metric"><div class="metric-val" style="color:#e67e22">Medium</div><div class="metric-lbl">DPDP risk level</div></div>
+      <div class="metric"><div class="metric-val" style="color:#185fa5">Staff data</div><div class="metric-lbl">Adult — standard consent</div></div>
+    </div>
+  </div>
+
+  <div class="sub-section" id="wf-classify">
+    <div class="card">
+      <div class="card-title">Field-level classification</div>
+      <table>
+        <thead><tr><th>Field</th><th>Section</th><th>Classification &amp; Action</th></tr></thead>
+        <tbody>
+          <tr><td><code>referenceId</code></td><td>1</td><td><span class="tag tag-opt">server-generated UUID — reject from client</span></td></tr>
+          <tr><td><code>name</code></td><td>1</td><td><span class="tag tag-pii">PII</span> <span class="tag tag-enc">mask logs</span> max 100 chars, trim, escape</td></tr>
+          <tr><td><code>email</code></td><td>1</td><td><span class="tag tag-pii">PII</span> <span class="tag tag-enc">mask logs</span> <span class="tag tag-val">validate format, normalizeEmail</span></td></tr>
+          <tr><td><code>phone</code></td><td>1</td><td><span class="tag tag-pii">PII</span> <span class="tag tag-enc">mask logs</span> <span class="tag tag-val">Indian phone regex</span></td></tr>
+          <tr><td><code>role</code></td><td>1</td><td><span class="tag tag-val">enum: Teacher/Principal/Vice Principal/Coordinator/Other</span></td></tr>
+          <tr><td><code>school</code></td><td>1</td><td><span class="tag tag-val">validate, max 200 chars, trim, escape</span></td></tr>
+          <tr><td><code>city</code></td><td>1</td><td><span class="tag tag-val">dropdown enum — validated</span></td></tr>
+          <tr><td><code>preferred_date</code></td><td>2</td><td><span class="tag tag-val">ISO8601, must be future date</span></td></tr>
+          <tr><td><code>alternative_date</code></td><td>2</td><td><span class="tag tag-val">ISO8601, optional, must be future</span></td></tr>
+          <tr><td><code>teacher_count</code></td><td>3</td><td><span class="tag tag-val">integer 1–500, reject negatives/strings</span></td></tr>
+          <tr><td><code>interests</code></td><td>4</td><td><span class="tag tag-val">array of enum values, max 10 items</span></td></tr>
+          <tr><td><code>notes</code></td><td>4</td><td><span class="tag tag-val">sanitize XSS, max 500 chars</span></td></tr>
+          <tr><td><code>status, submittedAt</code></td><td>4</td><td><span class="tag tag-opt">server-set only — reject if present in client payload</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sub-section" id="wf-security">
+    <div class="card">
+      <div class="card-title">🛡 Security measures</div>
+      <ul class="cl">
+        <li><div><strong>Duplicate booking prevention.</strong> Index on email + preferred_date. If same email submits for same date within 24 hours, return the same generic success response without creating a duplicate. Prevents both accidental duplicates and calendar flooding.</div></li>
+        <li><div><strong>CAPTCHA — mandatory.</strong> Public form, no authentication. Without CAPTCHA, bots can mass-register fake workshops and flood the scheduling system. Use reCAPTCHA v3 or Cloudflare Turnstile, validated server-side.</div></li>
+        <li><div><strong>status and submittedAt — hardcoded on server.</strong> Reject these fields from the client payload. An attacker sending status: "confirmed" must not be able to auto-confirm their own registration. Use .not().exists() in validation.</div></li>
+        <li><div><strong>teacher_count — strict integer bounds.</strong> Validate as integer, min 1, max 500. A value of -1 or 99999 is invalid and could probe server behaviour. Reject non-integer values with a generic error.</div></li>
+        <li><div><strong>Email confirmation must not leak.</strong> The confirmation email sent to the registrant should contain only their own data. Never include counts of other registrants, other school names, or booking slot availability.</div></li>
+        <li><div><strong>Rate limiting: 3 submissions per IP per day.</strong> Workshops are low-frequency events. 3/day is generous for a legitimate user and blocks automation.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sub-section" id="wf-dpdp">
+    <div class="card">
+      <div class="card-title">📜 DPDP obligations</div>
+      <ul class="cl">
+        <li><div><strong>Consent checkbox (adult standard consent).</strong> Add an unchecked-by-default checkbox: "I consent to SproutSong collecting my name, email, and phone to schedule and confirm the AI workshop and for follow-up communication." Store consentGiven, consentTimestamp, consentIP.</div></li>
+        <li><div><strong>Separate opt-in for future marketing.</strong> Add a second optional checkbox (default unchecked): "I'd like to receive updates about future SproutSong workshops and events." Keep workshop scheduling separate from marketing contact. Never pre-check this box.</div></li>
+        <li><div><strong>Retention limit: 12 months post-workshop.</strong> After 12 months, auto-purge name, email, phone. Retain only anonymised aggregate data (school, city, teacher_count) for analytics. Implement via MongoDB TTL index on completedAt.</div></li>
+        <li><div><strong>Right to erasure.</strong> Registrant can request deletion before or after the workshop. Process within 72 hours. After a completed workshop, null PII fields but retain anonymised record for 12 months.</div></li>
+        <li><div><strong>No secondary use of contact data.</strong> Name and email from this form must not be added to a CRM or marketing list without explicit opt-in. Workshop registration ≠ marketing consent.</div></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Consent text</div>
+      <pre>// Checkbox 1 — required, unchecked by default
+"I consent to SproutSong collecting my name, email, and phone 
+number to schedule and manage this AI workshop registration, 
+and for follow-up communication about SproutSong's services. 
+Data will be retained for 12 months after the workshop. 
+I can request deletion at privacy@sproutsong.com."
+
+// Checkbox 2 — optional, unchecked by default
+"I'd also like to receive updates about future SproutSong 
+workshops and events."
+
+// Store in DB:
+consentGiven: Boolean        (required)
+marketingOptIn: Boolean      (default false — NEVER pre-checked)
+consentTimestamp: Date
+consentIP: String</pre>
+    </div>
+  </div>
+
+  <div class="sub-section" id="wf-code">
+    <div class="card">
+      <div class="card-title">Validation + duplicate prevention</div>
+      <pre>import { body, validationResult } from 'express-validator';
+import rateLimit from 'express-rate-limit';
+import { v4 as uuidv4 } from 'uuid';
+
+const workshopLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours
+  max: 3,
+  message: { message: 'Too many registrations. Please try again tomorrow.' }
+});
+
+const workshopValidation = [
+  body('name').trim().isLength({ min: 2, max: 100 }).escape(),
+  body('email').isEmail().normalizeEmail().trim(),
+  body('phone').matches(/^[6-9]\d{9}$/),
+  body('role').isIn(['Teacher','Principal','Vice Principal','Coordinator','Other']),
+  body('school').trim().isLength({ min: 2, max: 200 }).escape(),
+  body('city').isString().trim().isLength({ max: 100 }),
+  body('preferred_date').isISO8601().isAfter(new Date().toISOString()),
+  body('alternative_date').optional().isISO8601().isAfter(new Date().toISOString()),
+  body('teacher_count').isInt({ min: 1, max: 500 }),
+  body('interests').optional().isArray({ max: 10 }),
+  body('notes').optional().trim().isLength({ max: 500 }).escape(),
+  body('status').not().exists(),      // server-set only
+  body('submittedAt').not().exists(), // server-set only
+  body('referenceId').not().exists(), // server-generated
+  body('consentGiven').equals('true').withMessage('Consent required'),
+];
+
+router.post('/workshop-register', workshopLimiter, workshopValidation, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(422).json({ message: 'Invalid submission.' });
+
+  // Duplicate check — same response either way (no info leak)
+  const duplicate = await WorkshopReg.findOne({
+    email: req.body.email,
+    preferred_date: req.body.preferred_date,
+    createdAt: { $gte: new Date(Date.now() - 86400000) }
+  });
+  if (duplicate)
+    return res.status(200).json({ message: 'Registration received.' });
+
+  await new WorkshopReg({
+    ...req.body,
+    referenceId: uuidv4(),
+    status: 'pending',        // hardcoded
+    submittedAt: new Date(),  // hardcoded
+    consentTimestamp: new Date(),
+    consentIP: req.ip,
+    marketingOptIn: req.body.marketingOptIn === 'true',
+  }).save();
+
+  // Log without PII
+  console.log(`Workshop reg — school: ${req.body.school}, ip: ${req.ip}`);
+  res.status(200).json({ message: 'Registration received.' });
+});</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== CONTACT US FORM ======================== -->
+<div class="form-section" id="form-cu">
+  <div class="info-box"><strong>ℹ Low–Medium risk form.</strong> Minimal data — name, email, optional phone, free-text message. Simplest schema of all four forms. Main risks: XSS in message field, spam flooding, over-retention of enquiry data.</div>
+  <div class="sub-tabs">
+    <button class="stab active" onclick="switchSub('cu','inv')">📦 Data inventory</button>
+    <button class="stab" onclick="switchSub('cu','classify')">🏷 Field classification</button>
+    <button class="stab" onclick="switchSub('cu','security')">🛡 Security measures</button>
+    <button class="stab" onclick="switchSub('cu','dpdp')">📜 DPDP obligations</button>
+    <button class="stab" onclick="switchSub('cu','code')">💻 Code</button>
+  </div>
+
+  <div class="sub-section active" id="cu-inv">
+    <div class="inv-block"><div class="inv-q">What data do we collect?</div><div class="inv-a">Name (required), email address (required), phone number (optional), free-text message (required). Server metadata: status (pending/resolved/closed) and submittedAt timestamp.</div></div>
+    <div class="inv-block"><div class="inv-q">Why do we collect it?</div><div class="inv-a">To receive and respond to enquiries, feedback, or support requests from visitors to the SproutSong website. Contact details are required solely to respond to the person.</div></div>
+    <div class="inv-block"><div class="inv-q">Where is it stored?</div><div class="inv-a">MongoDB (contactRequests collection). No file storage. This is the simplest storage profile of all four forms. Status and submittedAt are server-generated.</div></div>
+    <div class="inv-block"><div class="inv-q">Who can access it?</div><div class="inv-a">SproutSong support/customer success team only. No school admin access, no student access. The submitter has no portal access — they can request deletion by emailing privacy@sproutsong.com.</div></div>
+    <div class="inv-block"><div class="inv-q">How long do we keep it?</div><div class="inv-a">Resolved/closed: 6 months after resolution then auto-delete via MongoDB TTL index on resolvedAt. Pending/open: keep until resolved + 30 days. This is the shortest retention of all four forms — there is no long-term business need for a contact message after resolution. Anonymised aggregate data (no PII) may be retained for category analytics.</div></div>
+    <div class="grid2">
+      <div class="metric"><div class="metric-val" style="color:#27ae60">Low–Medium</div><div class="metric-lbl">DPDP risk level</div></div>
+      <div class="metric"><div class="metric-val" style="color:#185fa5">6 months</div><div class="metric-lbl">Max retention after resolution</div></div>
+    </div>
+  </div>
+
+  <div class="sub-section" id="cu-classify">
+    <div class="card">
+      <div class="card-title">Field-level classification</div>
+      <table>
+        <thead><tr><th>Field</th><th>Classification</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code></td><td><span class="tag tag-pii">PII</span></td><td>Mask in logs. Trim, escape, max 100 chars.</td></tr>
+          <tr><td><code>email</code></td><td><span class="tag tag-pii">PII</span> <span class="tag tag-enc">mask logs</span></td><td>Validate format, normalizeEmail, lowercase.</td></tr>
+          <tr><td><code>phone</code></td><td><span class="tag tag-pii">PII (optional)</span> <span class="tag tag-enc">mask logs</span></td><td>Validate Indian phone regex if provided. Do not require.</td></tr>
+          <tr><td><code>message</code></td><td><span class="tag tag-val">XSS risk</span></td><td>Strip HTML tags. Escape before rendering in admin panel. Max 2000 chars.</td></tr>
+          <tr><td><code>status</code></td><td><span class="tag tag-opt">server-set only</span></td><td>Enum: pending/resolved/closed. Reject from client with .not().exists().</td></tr>
+          <tr><td><code>submittedAt</code></td><td><span class="tag tag-opt">server-set only</span></td><td>Set as new Date() on server. Never accept from client.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sub-section" id="cu-security">
+    <div class="card">
+      <div class="card-title">🛡 Security measures</div>
+      <ul class="cl">
+        <li><div><strong>message field — XSS sanitization is non-negotiable.</strong> Free-text rendered in your admin panel. An attacker can submit a script tag that executes in your support agent's browser (stored XSS). Use DOMPurify on the admin frontend. Also escape server-side with .escape() in express-validator. Never render raw HTML from user input.</div></li>
+        <li><div><strong>CAPTCHA + honeypot field.</strong> Contact forms are the most common spam target. Add reCAPTCHA v3 + a hidden honeypot field (e.g., name="website") that a real user never sees or fills. Silently reject submissions where the honeypot has a value.</div></li>
+        <li><div><strong>Rate limiting: 5 per IP per hour.</strong> No legitimate user needs to submit more than 5 contact forms per hour. Return HTTP 429 with a polite message.</div></li>
+        <li><div><strong>Do not return the record ID in the response.</strong> Return only a generic success message. There is no need for the submitter to track their record. Exposing the MongoDB _id could allow enumeration of the collection size.</div></li>
+        <li><div><strong>Disposable email detection.</strong> Consider blocking known disposable email domains (Mailinator, Guerrilla Mail) to reduce spam. Use a simple allowlist approach or a library like disposable-email-domains.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sub-section" id="cu-dpdp">
+    <div class="card">
+      <div class="card-title">📜 DPDP obligations</div>
+      <ul class="cl">
+        <li><div><strong>Consent notice — proportionate approach.</strong> For a basic contact form, a notice below the submit button is proportionate: "By submitting this form, you agree to SproutSong processing your contact details to respond to your enquiry. Data will be deleted after 6 months of resolution. Read our Privacy Policy." A full checkbox is recommended if phone is also collected.</div></li>
+        <li><div><strong>No secondary use of contact data.</strong> Name and email from this form must not be added to a CRM, newsletter list, or marketing pipeline without explicit separate opt-in. Responding to the enquiry is the only lawful purpose for this data.</div></li>
+        <li><div><strong>Retention: 6 months maximum after resolution.</strong> Implement a MongoDB TTL index on resolvedAt. When a ticket is marked resolved, set resolvedAt = Date.now(). The TTL will auto-delete the record after 180 days.</div></li>
+        <li><div><strong>Easy deletion path.</strong> The submitter has no account, so they cannot self-serve delete. Provide privacy@sproutsong.com clearly and commit to processing within 72 hours. Use email as the lookup key for their record.</div></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Consent notice text</div>
+      <pre>// Notice text below the submit button (no checkbox needed for basic contact)
+"By submitting this form, you agree to SproutSong processing your 
+contact details to respond to your enquiry. Your data will not be 
+shared with third parties and will be deleted within 6 months 
+of resolution. [Read our Privacy Policy]"
+
+// If phone is collected — add optional checkbox:
+"I consent to SproutSong contacting me by phone in response to 
+my enquiry."</pre>
+    </div>
+  </div>
+
+  <div class="sub-section" id="cu-code">
+    <div class="card">
+      <div class="card-title">Full secure route with honeypot + TTL schema</div>
+      <pre>import { body, validationResult } from 'express-validator';
+import rateLimit from 'express-rate-limit';
+import mongoSanitize from 'express-mongo-sanitize';
+
+// Rate limiter
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  message: { message: 'Too many submissions. Please try again later.' },
+});
+
+// Validation
+const contactValidation = [
+  body('name').trim().isLength({ min: 2, max: 100 }).escape(),
+  body('email').isEmail().normalizeEmail().trim(),
+  body('phone').optional().matches(/^[6-9]\d{9}$/),
+  body('message').trim().isLength({ min: 10, max: 2000 }).escape(),
+  body('status').not().exists(),      // server-set only
+  body('submittedAt').not().exists(), // server-set only
+  body('website').not().exists(),     // honeypot
+];
+
+router.post('/contact', contactLimiter, mongoSanitize(), contactValidation, async (req, res) => {
+  // Honeypot — silent reject (same response as success)
+  if (req.body.website)
+    return res.status(200).json({ message: 'Your message has been received.' });
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(422).json({ message: 'Please check your submission.' });
+
+  await new ContactRequest({
+    name:        req.body.name,
+    email:       req.body.email,
+    phone:       req.body.phone || null,
+    message:     req.body.message,
+    status:      'pending',       // hardcoded
+    submittedAt: new Date(),      // hardcoded
+    resolvedAt:  null,
+  }).save();
+
+  // Log without PII
+  console.log(`Contact form received — ip: ${req.ip}, ts: ${new Date().toISOString()}`);
+
+  // Generic response — no record ID returned
+  res.status(200).json({ message: 'Your message has been received. We will respond within 2 business days.' });
+});
+
+// ——— Mongoose schema with TTL index ———
+const contactSchema = new Schema({
+  name:        { type: String, required: true, trim: true, maxlength: 100 },
+  email:       { type: String, required: true, trim: true, lowercase: true },
+  phone:       { type: String, default: null },
+  message:     { type: String, required: true, maxlength: 2000 },
+  status:      { type: String, enum: ['pending','resolved','closed'], default: 'pending' },
+  submittedAt: { type: Date, default: Date.now },
+  resolvedAt:  { type: Date, default: null },
+}, { strict: true });
+
+// Auto-delete 6 months after resolution
+contactSchema.index(
+  { resolvedAt: 1 },
+  { expireAfterSeconds: 15552000,  // 180 days
+    partialFilterExpression: { resolvedAt: { $ne: null } }
+  }
+);
+
+// When marking resolved in your admin route:
+// await ContactRequest.findByIdAndUpdate(id, {
+//   status: 'resolved', resolvedAt: new Date()
+// });</pre>
+    </div>
+  </div>
+</div>
+
+</div><!-- container -->
+
+<script>
+function switchForm(id) {
+  document.querySelectorAll('.form-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('form-'+id).classList.add('active');
+  event.target.closest('.ftab').classList.add('active');
+}
+function switchSub(form,sub) {
+  const p=document.getElementById('form-'+form);
+  p.querySelectorAll('.sub-section').forEach(s=>s.classList.remove('active'));
+  p.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(form+'-'+sub).classList.add('active');
+  event.target.closest('.stab').classList.add('active');
+}
+</script>
+</body>
+</html>
