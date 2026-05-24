@@ -1,0 +1,51 @@
+Tasks :-
+https://app.sproutmentors.com/myclass/student/student-list
+Create a project in our claude to use the existing schema and include in the report.
+so schema like
+
+Students
+Classes
+Assignments
+Reports
+Exams
+Assessments
+Activities
+Home work
+Attendance
+Tasks (Project or any other activities)
+Class Routine etc.
+
+Search for other relevant modules and forms on Sprout Mentors that need security implementation according to DPDP Act and generate a similar report. Same list of questions as Day - 3.
+-----------------------------------------------------------------------------------------------------------------------------
+
+ChatGPT - DPDP Compliance Report :- https://chatgpt.com/share/6a0d6449-7834-83e8-84fc-09c2278044bf
+
+4th point of this specifies the Module-Wise DPDP Applicability. In point 7, you can see sample consent descriptions. And in point 8, you can see what security implementation is needed in each module.
+
+This is more of a conceptual level so I added the schema and collection with GPT so I can have more in-depth analysis.
+
+The schema collections:-
+aitrainings
+classes
+contacts
+educators
+insights
+mentors
+seopages
+Student_Task
+students
+students_attendances
+substitutions
+Syllabus_Progress
+teacherprofiles
+teachers
+
+Requirements from GPT response:-
+
+1. If any relevant fields are missing or not?
+2. Check the types and suggest the changes considering security point of view
+3. Does Captcha code provides the security  from the front-end?
+4. Direct API call from browser or terminal through curl call can be prevented?
+5. Any server side validation to prevent the attack ?
+6. Middle ware implementation and security check - with node.js?
+7. Mongodb - data protection
