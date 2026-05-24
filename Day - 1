@@ -1,1 +1,7 @@
+I have gone through the documents and have understood the objectives. I've also verified the tech stack and the security principles to keep in mind while developing the SproutSong portal. 
 
+I would like to add another piece of information as we are using MongoDB. We have to make efforts to avoid attacks like noSQL Injection, Broken Access Control, avoid publicly exposed DB, credential stuffing attack, privilege escalation, data exfiltration, brute force, ransomware, insider threats, session hijacks or even JWT theft as mentioned in the document. We also need to prevent the upload of malicious files (usually have two extensions), injection using regex, DoS attacks, ensure encryption of data, have a backup, avoid misconfigured roles, do log sanitization and avoid cross tenant data leakage. Supply chain attack as well (already mentioned in document - npm auditing)
+
+I opened the SproutSong website and familiarized myself with the portal.
+
+Sprout mentors - it's for teachers / educators, I did the same for this web app.
