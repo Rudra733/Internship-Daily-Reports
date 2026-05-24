@@ -1,0 +1,32 @@
+I received the GitHub credentials for my company account from the tech lead. I accessed the repo of SproutSong and cloned it.
+
+I had to start with the Main Responsibilities section from the doc i.e. Part A: Data Mapping.
+
+"https://auth.sproutsong.com/request-demo" is the URL for the request a demo form of the portal. I ran through the form and familiarized myself with it.
+Then I accessed the repo via VS Code in order to inspect the codes and database schemas. I had to download node.js and other required dependencies and extensions.
+
+Finally I was tasked with making an excel sheet which includes the schema of the form in a tabular form so as to generate a report for the security implementations for this particular form.
+
+I then filled the actual form on the portal and received the logs generated from the owner and reviewed it to identify any vulnerabilities. 
+
+I realized that a few fields containing PII like phone number, name, address, etc. were stored as plaintext and were visible in the logs. These should be encrypted and be stored in unreadable format. Also the logs needed to be masked.
+
+I found other relevant security implementations needed and generated a report for the same. The URL for the report:-
+
+https://claude.ai/share/b7737bd7-3d7d-4c58-928e-4c3267f7dcc0
+
+If I were to summarise the report from claude, we basically need to:
+
+1. Encrypt PII which is perasonally identifiable information like names, phone numbers, etc.
+2. Validate the marked fields with proper format.
+3. Mask the sensitive details in the logs generated, email, numbers, etc. should not be visible as PLAINTEXT in the logs that are generated.
+4. Implement a mechanism to avoid cross site scripting.
+
+Cross-Site Scripting (XSS) attacks are a type of injection, in which malicious scripts are injected into otherwise benign and trusted websites. XSS attacks occur when an attacker uses a web application to send malicious code, generally in the form of a browser side script, to a different end user. Flaws that allow these attacks to succeed are quite widespread and occur anywhere a web application uses input from a user within the output it generates without validating or encoding it.
+An attacker can use XSS to send a malicious script to an unsuspecting user. The end user’s browser has no way to know that the script should not be trusted, and will execute the script. Because it thinks the script came from a trusted source, the malicious script can access any cookies, session tokens, or other sensitive information retained by the browser and used with that site. These scripts can even rewrite the content of the HTML page. For more details on the different types of XSS flaws, https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html 
+
+5. The user should also agree to the consent fields that we need to add.
+Also have to implement access control for fields that should only be accessed by the admin.
+
+I think that adding consent fields, record of concept proof and backup of the proof as well as the data is most important for us as of now.
+Proof of consent should have timestamp, IP and checkbox ticked by user.
