@@ -1,0 +1,23 @@
+Tasks for today:- (Make schema excel sheet and generate report as previously done for all forms)
+SproutSong - forms:-
+
+1. Request a demo - form (Done on 15th May)
+2. Counselling form - Student counselling form - Review it and prepare the excel and include in report - URL: https://www.sproutsong.com/counselling/counselling-form
+3. Contact us form - SproutSong contact us form
+4. AI workshop form - Schools to subscribe for AI workshop -  URL: https://www.sproutsong.com/ai-workshop
+
+Answer questions like :-
+1. What data do we collect?
+2. Why do we collect it?
+3. Where is it stored?
+4. Who can access it?
+5. How long do we keep it?
+-------------------------------------------------------------------------------------------------------------------------------
+
+All 4 sheets are ready. Also I submitted the counselling, AI workshop and contact us forms on the website. Then I could see my input in db and logs. I reviewed that.
+
+After that, I generated the reports for each using claude. The questions mentioned above and those in Part - B image were taken into consideration for the report.
+
+Then I logged into the Sprout Mentors web app : https://app.sproutmentors.com/ with credentials provided to me and searched for other forms in it, which are similar and need similar security implementations under the DPDP Act.
+
+Re-evaluated the logs for request a demo form after re-submitting the form, as some changes were made.
