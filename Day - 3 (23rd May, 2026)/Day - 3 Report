@@ -1,0 +1,60 @@
+Tasks:-
+Image shared contains security implementations we need to do. We need to know what it covers in Error handling , secure logging etc.
+
+Claude can help in preparing the sample like:
+
+API call from front-end
+how to secure the payload and response
+How to read the payload
+format of the api response (return)
+
+Make a document with examples and make sample codes.
+-----------------------------------------------------------------------------------------------------------------------------
+
+Secure logging just means,
+
+In the logs generated when any user fills the forms, the logs generated can be seen by the owners and admins who have access. These logs may sometimes have PERSONALLY IDENTIFIABLE INFORMATION like phone numbers, name, etc. This has been highlighted in the report we generated with the sheets for all 4 forms. 
+So basically, these fields shouldn't be stored as plaintext and should not be readable from the logs by anyone. We need to encrypt these names, phone numbers, etc. so no one can see it in readable form.
+
+Generated report. Summary:-
+
+Logging Strategy:
+Three-layer architecture: Pino for all structured app/error logs, Morgan/pino-http for HTTP request logs, and MongoDB AuditLog for persistent security events  (Medium) . Log level guide (ERROR → WARN → INFO → DEBUG → TRACE) with SproutSong-specific examples, and a standard log entry shape with all required fields.
+Full logger.js with built-in redact paths (authorization header, cookie, password, token, OTP, email, phone, Aadhaar, card numbers). Pino's redact feature ensures sensitive fields are censored before any log is written — no credential leaks regardless of what controller code logs.  (Google Cloud) Also includes pino-http middleware config and the AsyncLocalStorage request ID / correlation ID pattern.
+
+And for masking the personally identifiable information:
+
+We have to implement algorithms like:
+HMAC-SHA256 (recommended for email, phone, Aadhaar) — deterministic and irreversible, so you can correlate logs without exposing the actual value. Best practice is to use keyed hashing to resist brute-force attacks.  
+Partial masking — phone last 4 digits, email j**@school.com
+Full redaction — passwords, tokens, OTPs (zero log value)
+AES-256-GCM — for audit log entries where PII must be stored for compliance but encrypted at rest, with negligible per-request overhead.  (Nodejs-security)
+Tokenisation — for payment data, replacing card numbers with opaque tokens via a vault.  (Digiqt)
+Format-Preserving Encryption (FPE) — for test/staging environments
+
+We also have to add consent paragraphs with checkbox for user to agree. And have to store that as proof, alongwith timestamp of agreement by user.
+
+Generated sample codes...
+Here's what's in the zip — 10 files across a complete implementation:
+backend/config/
+logger.js — Single Pino logger instance with all 20+ REDACT_PATHS pre-configured (passwords, tokens, OTPs, email, phone, Aadhaar, card numbers, wildcards)
+logRotation.js — pino-roll file rotation fallback (daily + 50MB threshold, 30-day retention)
+backend/middleware/
+httpLogger.js — pino-http middleware; logs route patterns not actual param values, strips query strings and headers
+requestId.js — AsyncLocalStorage-based correlation ID; getLogger() returns a child logger with requestId + userId + schoolId + role auto-included
+backend/utils/
+piiMask.js — hmacMask(), partialMask(), maskEmail(), maskIp(), maskAadhaar(), sanitiseKeys() — all algorithms from Section 5 of the guide
+auditEncrypt.js — AES-256-GCM encryptForAudit() / decryptFromAudit() with versioned envelope (v1:<iv>:<tag>:<cipher>) for key rotation support
+backend/models/
+AuditLog.js — Mongoose schema with 90-day TTL index, encryptedTarget field, compound indexes, and a AuditLog.record() static method
+backend/controllers/
+authController.js — Login/logout/password-change with annotated ✅ correct vs ❌ bad patterns
+studentController.js — Student fetch, enrolment, and counselling record access with mandatory audit entries
+tests/secureLogging.test.js — 40+ assertions covering all masking functions, AES round-trips, and compliance checks (known PII strings verified to never appear in log output).
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Attached MongoDB Security Checks image. Generate report based on it.
+-----------------------------------------------------------------------------------------------------------------------------
+
+Report Generated.
