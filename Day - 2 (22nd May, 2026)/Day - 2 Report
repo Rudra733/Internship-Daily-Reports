@@ -1,0 +1,63 @@
+Tasks:-
+Important API Rules:-
+Every protected API should check:
+req.user.id
+req.user.role
+req.user.schoolId
+req.params.id
+Never trust only frontend restrictions.
+Bad practice:
+// Only checking login
+if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+Better practice:
+// Check login + role + ownership
+if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+
+if (!allowedRoles.includes(req.user.role)) {
+ return res.status(403).json({ message: "Forbidden" });
+}
+
+if (record.schoolId.toString() !== req.user.schoolId.toString()) {
+ return res.status(403).json({ message: "Access denied" });
+}
+
+Share the route file of core and auth back-end to claude and it will analyse and prepare the report.
+Search for other code audit tools for our use case and prepare report.
+-----------------------------------------------------------------------------------------------------------------------------
+
+I searched for the relevant code audit tools.
+
+I first used OWASP ZAP. I did a vulnerability scan. Started for URL : https://www.sproutsong.com/
+-----------------------------------------------------------------------------------------------------------------------------
+
+We need the in depth analysis so please start the Code and API security as we discussed. Create a new dummy account in github and scan the repository to allow only required codes to be read by code audit tool. 
+
+1. Include any one role of front-end e.g. students, schools etc.
+2. auth
+3. backend-auth
+4. core-backend
+5. admin
+include docker-compose and dockerfiles for each.
+-----------------------------------------------------------------------------------------------------------------------------
+
+Found vulnerabilities using snyk.io (using dummy account). I added these 5 folders for now:
+1. students
+2. auth
+3. backend-auth
+4. core-backend
+5. admin
+-----------------------------------------------------------------------------------------------------------------------------
+
+API and Back-end security check includes:-
+API routes
+API security
+Middleware
+How to check the api params
+Encrypt the response - how to make it possible?
+Mongodb security checklist
+Sensitive fields and field types - default values etc..
+
+Search related to these and make a report.
+-----------------------------------------------------------------------------------------------------------------------------
+
+Generated the Report.
