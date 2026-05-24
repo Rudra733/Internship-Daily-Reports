@@ -21,3 +21,5 @@ After that, I generated the reports for each using claude. The questions mention
 Then I logged into the Sprout Mentors web app : https://app.sproutmentors.com/ with credentials provided to me and searched for other forms in it, which are similar and need similar security implementations under the DPDP Act.
 
 Re-evaluated the logs for request a demo form after re-submitting the form, as some changes were made.
+
+The PDF contains the detailed list of what security implementation needs to be done for each field and the HTML page is the report for all 4 forms based on the questions.
