@@ -1,0 +1,55 @@
+Part C includes roles and access control. We have to check various things regarding accessibility of different types of users on the site. We need to do these tests :-
+Test	                                                        Expected Result
+Student A tries to access Student B report URL                Access denied
+Teacher from School A tries School B student API	            Access denied
+Parent changes childId in API request	                        Access denied
+Expired token is used	                                        Request rejected
+Deleted user token is reused	                                Request rejected
+User role changed but old token remains active	              Token should be invalidated or rechecked
+Admin-only API accessed by teacher	                          Access denied
+
+Roles :-
+Accountant, Admin, Analytics, Coordinator, Extra Curricular, Librarian, Management, Parents, Schools, Sports, Students, etc.
+
+1) define the set of rules for each role in a document 
+2) Ask AI about how to prevent the access, set security measure from front-end or back-end or through middleware which redirects
+3) Any changes to be done in the database or not. etc..
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Generated the Access_Control_Security_Policy.docx. 
+Section 2 contains role definition, what each can access and what it can't.
+Section 3 has role based access control.
+Section 4 has methods to prevent unauthorised access which we still have to discuss in technical ways, how to implement.
+Table in section 2 is important for us. It answers the set of rules for each roles.
+-----------------------------------------------------------------------------------------------------------------------------
+
+Also check if there is any additional role which if we have missed out. It can also suggest and the implementation.
+-----------------------------------------------------------------------------------------------------------------------------
+
+The few roles we can add:-
+
+1. HR or Managing Staff
+2. School Transport 
+3. Admission Person/ Receptionist 
+4. Exam Coordinator 
+5. Hostel Warden
+6. IT admin/ System admin
+I then generated some implementation related information.
+
+I made the .js and other code files for the new roles. A summary of each file:-
+
+shared/roles.js — The single source of truth. Copy it into both backend/config/roles.js and frontend/lib/roles.js. All roles, permissions, route guards, and login redirects live here. Change once, applies everywhere.
+
+backend/models/User.js — Mongoose User model with role, schoolId, tokenVersion, and role-specific scoping fields (assignedHostelBlockIds, assignedExamIds, childIds, etc.)
+
+backend/middleware/auth.js — 4 middlewares chained together: authenticate (JWT verify + tokenVersion check) → authorize('module', 'action') → scopeToSchool (auto-appends school filter) → scopeToSelf (IDOR prevention)
+
+backend/routes/newRoles.js — All Express routes for Hostel, Admissions, Marketing, Examinations with the correct middleware chain on each. Transport is stubbed with a comment.
+
+backend/models/AuditLog.js — Logs every 403/401, auto-deletes after 90 days.
+backend/scripts/seedRoles.js — Run once to create one test user per role.
+
+frontend/hooks/useAuth.js — useAuth() hook giving you user, role, can('module', 'action'), is('role'), login, logout.
+
+frontend/components/auth/withAuth.js — withAuth(Page, { allowedRoles }) HOC for page-level guards + <PermissionGate module="examinations" action="write"> for hiding UI elements.
