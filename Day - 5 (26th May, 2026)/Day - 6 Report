@@ -1,0 +1,25 @@
+I created a sample code boilerplate zip for File Upload Security Implementation, which would serve as samples for the development team.
+
+NOTE:- We also need to avoid files with 2 extensions.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Next task is about logging the success and failure and some critical issues which might occur or occurred...
+
+I then created the password, OTP, session security guide.
+
+Summary:-
+
+Section 1 — Password Policy — Rules table (min 10 chars, complexity, bcrypt rounds ≥ 12, reset expiry, failed login limit, MFA per role), plus a full Joi password schema with HaveIBeenPwned k-anonymity check implementation.
+Section 2 — OTP Security — Rules table covering length, generation (crypto.randomInt vs Math.random), storage, expiry, used flag, rate limiting, and attempt limits. Full OTP lifecycle code: generate → hash → store payload → verify with attempt counter.
+Section 3 — JWT Security — The full controls table from your screenshots (expiry, refresh token, blacklist, HttpOnly, Secure flag, SameSite, payload rules, secret rotation). Code for signing tokens with safe payload (no email/name/phone), and setting all cookies with correct flags.
+Section 4 — Refresh Tokens — MongoDB RefreshToken model storing SHA-256 hash (not raw token), with TTL index, used flag, family field for rotation attack detection, and automatic replay detection that revokes the entire token family.
+Section 5 — Token Blacklist — Two-mechanism approach: tokenVersion for bulk invalidation on logout/role change/password reset, plus jti blacklist in Redis for single-device logout. Covers the fallback if Redis is unavailable.
+Section 6 — Failed Login & Lockout — Full login controller with 5-attempt lockout, 15-minute cooldown, and the same generic error message for wrong email AND wrong password to prevent user enumeration.
+Section 7 — MFA — TOTP setup with otplib (secret encrypted with AES-256-GCM at rest, QR code generation), plus a role-based MFA matrix (TOTP for admins, SMS OTP for new device logins for parents/students).
+Section 8 — Bad vs Good — 8-row comparison table covering all the key antipatterns.
+Section 9 — Master Checklist — 35 items across Password, OTP, JWT, Token Invalidation, Login Security, and MFA sections.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+This marked the conclusion of Part G as per the master document. So, I created a summarizing report deocument covering the details about all tasks performed from part A to G.
