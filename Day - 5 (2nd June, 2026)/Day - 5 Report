@@ -1,0 +1,14 @@
+Move to Part N. Learn Burp Suite Community and test the portal.
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+I've gone through how burp is used, and made myself familiar with the interface. 
+Also completed download, setup and signup.
+
+Burp is not showing all the vulnerabilities, and is asking for premium. I have an alternate free software, called openVAS.  It is free and checks for more number of vulnerabilities. And I have also used it before.
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Installed OpenVAS on my Kali Linux Virtual Machine. Finished the setup.
+
+Queued the initial feed sync of OpenVAS. 
