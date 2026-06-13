@@ -1,0 +1,38 @@
+Created MongoDB Security boilerplate zip, which contains sample codes for MongoDB Security Implementation. These will serve helpful to the development team.
+
+Summary of the zip file:-
+
+config/
+db.js — Mongoose connection with strict: true, strictQuery: true, debug disabled in prod, TLS support, safe error logging (never logs the URI)
+mongod.conf — Hardened server config with bindIp: 127.0.0.1, authorization: enabled, quiet mode, TLS block ready to uncomment
+middleware/
+mongoSanitize.js — Strips $ and . operators from all request inputs before they hit your controllers, with logging of injection attempts
+utils/
+fieldEncryption.js — AES-256-GCM encrypt/decrypt with versioned v1:iv:authTag:data envelopes, plus an encryptedField() Mongoose schema helper that auto-encrypts on save and decrypts on read
+sensitiveFieldHelpers.js — bcrypt password hashing, OTP generation/hashing/verification, reset token lifecycle, and sanitizeAadhaar() that stores only the last 4 digits
+models/
+User.js — Full User model with every sensitive field pattern: password (select: false + bcrypt), tokenVersion, OTP fields, reset token fields, Aadhaar last 4 only, toJSON that strips everything sensitive
+AuditLog.js — TTL-indexed collection (90 days), static helpers logDenial() and logSensitiveAccess() with AES-encrypted target
+SchemaTemplate.js — Copy-paste base for every new model
+plugins/auditPlugin.js — Attach to any schema to auto-log writes and deletes
+scripts/
+generateKeys.js — Generates FIELD_ENCRYPTION_KEY and HMAC_SECRET_KEY
+setupMongoUsers.js — Creates app / admin / backup users with correct least-privilege roles
+verifySetup.js — Automated pre-deployment checker (env vars, user permissions, encryption, sensitive field helpers)
+backup.sh — Daily GPG-encrypted mongodump → S3 cron script
+tests/
+mongodbSecurity.test.js — 40+ tests covering encryption round-trips, tamper detection, bcrypt, OTP lifecycle, reset tokens, Aadhaar sanitization, and security invariants
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+I then created the File Upload Security Guide Document.
+
+Part A — Overview & Scope — context on SproutSong's platform, all 7 document upload types (marksheets, student photos, school docs, certificates, counselling reports, internship reports, teacher documents), and why file upload security is critical under DPDP.
+Part B — Security Controls Table — the full controls table from your screenshots (allowed extensions, MIME validation, file size, virus scan, private bucket, signed URL, UUID naming, no executables, access control) with Required vs Recommended status and which contexts each applies to.
+Part C — Allowed File Types Per Context — exact allowed extensions, MIME types, and max file sizes for each upload context in SproutSong.
+Part D — Storage Architecture — the correct vs incorrect path structure (your File Access Rule with the Bad/Better examples), private bucket configuration requirements, AES-256 encryption, CORS policy, access logging, and versioning.
+Part E — File Access Control — the full access matrix (counsellor, school admin, super admin, student/parent, unauthenticated), the 6-step server-side verification flow for every file download, and the IDOR prevention explanation.
+Parts F–G — Implementation Code — ready-to-use Node.js/Express code for multer + MIME validation, S3 private bucket upload with UUID naming, the secure IDOR-protected file access route, and the MongoDB schema rules.
+Part H — Virus Scanning — ClamAV implementation and AWS Lambda-based cloud-native scanning workflow.
+Part I — Cascade Deletion — DPDP-compliant erasure code that deletes both the S3 object and MongoDB record, with the 72-hour SLA requirement.
+Part J — Pre-Deployment Checklist — 20-item verification checklist the team must sign off before any file upload feature goes live.
