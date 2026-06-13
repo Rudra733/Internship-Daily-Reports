@@ -1,0 +1,10 @@
+Task:-
+
+To identify if something goes wrong e.g. Student data got exposed, login to wrong user's profile, database leak etc.. We have covered such breaches so we need to prepare the document about how we can prevent the breaches. 
+This is basically covering more of the document level changes including some code examples and methodologies.
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+I created a document called Breach Prevention and Problem Solution. This was with reference to the task assigned.
+
+Then another document called Consent and Proof of Consent. This contains all the sample consent forms that can be check marked by user. It has ready to use consent text for all modules. It also contains the mechanism for storing proof of consent including logs, timestamp of when user agreed, user details etc. (With compliance to dpdp act).
