@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SproutSong — Trial Provisioning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#4f46e5; --indigo-600:#4338ca; --indigo-soft:#eef2ff; --indigo-line:#e0e7ff;
+    --slate-900:#0f172a; --slate-700:#334155; --slate-500:#64748b; --slate-400:#94a3b8;
+    --line:#e8edf3; --bg:#f5f7fb; --card:#ffffff;
+    --green:#16a34a; --green-soft:#dcfce7; --green-line:#bbf7d0;
+    --amber:#d97706; --amber-soft:#fef3c7;
+    --red:#dc2626; --red-soft:#fee2e2; --red-line:#fecaca;
+    --radius:14px; --shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.06);
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--slate-900);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:26px 22px 60px}
+
+  /* top brand bar */
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+  .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--indigo),#7c8cff);display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:var(--shadow)}
+  .brand b{font-size:20px;letter-spacing:-.02em}
+  .brand b span{color:var(--indigo)}
+  .brand small{display:block;font-size:9px;letter-spacing:.18em;color:var(--slate-400);font-weight:600;text-transform:uppercase}
+
+  /* tabs */
+  .tabs{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:var(--shadow)}
+  .tab{border:0;background:transparent;padding:9px 16px;border-radius:9px;font:600 13.5px 'Plus Jakarta Sans';color:var(--slate-500);cursor:pointer;transition:.15s}
+  .tab.active{background:var(--indigo);color:#fff}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+  .head h2{margin:0;font-size:17px;letter-spacing:-.01em}
+  .head p{margin:3px 0 0;color:var(--slate-500);font-size:12.5px}
+  .sec{padding:20px 22px}
+
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px}
+  .pill.green{background:var(--green-soft);color:var(--green);border:1px solid var(--green-line)}
+  .pill.amber{background:var(--amber-soft);color:var(--amber)}
+  .pill.indigo{background:var(--indigo-soft);color:var(--indigo);border:1px solid var(--indigo-line)}
+  .pill.red{background:var(--red-soft);color:var(--red);border:1px solid var(--red-line)}
+  .pill.slate{background:#f1f5f9;color:var(--slate-500)}
+  .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .field{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .field:last-child{border-bottom:0}
+  .field .k{color:var(--slate-500);font-weight:500}
+  .field .v{font-weight:600;text-align:right}
+  .label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo);display:flex;align-items:center;gap:7px;margin:0 0 6px}
+
+  /* roles table */
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--slate-400);font-weight:700;padding:0 12px 10px}
+  td{padding:12px;border-top:1px solid var(--line);font-size:13px;vertical-align:middle}
+  .rolename{font-weight:700}
+  .roledesc{color:var(--slate-400);font-size:11.5px;font-weight:500;margin-top:1px}
+
+  .stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .stepper button{border:0;background:#f8fafc;width:30px;height:30px;font-size:16px;cursor:pointer;color:var(--slate-700)}
+  .stepper button:disabled{opacity:.35;cursor:not-allowed}
+  .stepper span{min-width:34px;text-align:center;font-weight:700}
+  .cap{font-size:11px;color:var(--slate-400);margin-top:4px}
+
+  input.assignee{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font:500 12.5px 'Plus Jakarta Sans';width:100%;max-width:230px}
+  input.assignee:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-soft)}
+
+  .btn{border:0;border-radius:10px;padding:10px 16px;font:700 13px 'Plus Jakarta Sans';cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  .btn.primary{background:var(--indigo);color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.28)}
+  .btn.primary:hover{background:var(--indigo-600)}
+  .btn.ghost{background:#fff;color:var(--slate-700);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f8fafc}
+  .btn.tiny{padding:6px 11px;font-size:12px;border-radius:8px}
+  .btn.danger{background:var(--red-soft);color:var(--red);border:1px solid var(--red-line)}
+  .btn.danger:hover{background:#fdd}
+  .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+
+  .window{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end}
+  .ig label{display:block;font-size:11px;font-weight:700;color:var(--slate-500);margin-bottom:5px}
+  .ig input,.ig select{border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:600 13px 'Plus Jakarta Sans';color:var(--slate-900)}
+  .ig input:focus,.ig select:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-soft)}
+  .endbox{background:var(--indigo-soft);border:1px solid var(--indigo-line);border-radius:11px;padding:10px 16px}
+  .endbox .k{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--indigo)}
+  .endbox .v{font-size:15px;font-weight:800;color:var(--indigo-600)}
+
+  .empty{padding:26px;text-align:center;color:var(--slate-400);font-size:13px;border:1px dashed var(--line);border-radius:12px}
+
+  .acct{display:flex;align-items:center;gap:14px;padding:13px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;transition:.2s}
+  .acct.dead{opacity:.55;background:#fafbfc}
+  .acct .ico{width:38px;height:38px;border-radius:10px;background:var(--indigo-soft);color:var(--indigo);display:grid;place-items:center;font-weight:800;flex-shrink:0}
+  .acct .meta{flex:1;min-width:0}
+  .acct .meta .em{font-weight:700;font-size:13px}
+  .acct .meta .sub{font-size:11.5px;color:var(--slate-500);margin-top:2px}
+  .acct .right{display:flex;align-items:center;gap:9px;flex-shrink:0}
+  .count{font-variant-numeric:tabular-nums;font-weight:700;font-size:12px}
+
+  .bar{height:5px;border-radius:99px;background:#eef2f7;overflow:hidden;margin-top:8px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#4ade80);border-radius:99px;transition:width .4s}
+  .bar.warn i{background:linear-gradient(90deg,var(--amber),#fbbf24)}
+  .bar.crit i{background:linear-gradient(90deg,var(--red),#f87171)}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px}
+  .note{font-size:12px;color:var(--slate-500);background:#f8fafc;border:1px solid var(--line);border-left:3px solid var(--indigo);border-radius:8px;padding:10px 13px;margin-top:14px;line-height:1.5}
+  .feature-chip{display:inline-block;font-size:11.5px;color:var(--indigo);font-weight:600;margin:0 14px 8px 0}
+
+  /* module groups */
+  .mod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .mod{border:1px solid var(--line);border-radius:12px;padding:13px 14px;transition:.2s}
+  .mod.off{opacity:.5;background:#fafbfc}
+  .mod.req{border-color:var(--indigo-line);background:linear-gradient(0deg,var(--card),var(--indigo-soft) 280%)}
+  .mod-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+  .mod-name{font-weight:700;font-size:13px;display:flex;align-items:center;gap:7px}
+  .mod-name small{font-weight:600;color:var(--slate-400);font-size:10.5px}
+  .mod-feat{font-size:11px;color:var(--slate-500);line-height:1.55}
+  .mod-feat b{color:var(--slate-700);font-weight:600}
+  /* toggle */
+  .sw{position:relative;width:38px;height:21px;flex-shrink:0;cursor:pointer}
+  .sw input{opacity:0;width:0;height:0}
+  .sw .tr{position:absolute;inset:0;background:#cbd5e1;border-radius:99px;transition:.2s}
+  .sw .tr:before{content:'';position:absolute;width:15px;height:15px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+  .sw input:checked + .tr{background:var(--indigo)}
+  .sw input:checked + .tr:before{transform:translateX(17px)}
+  .sw input:disabled + .tr{opacity:.4;cursor:not-allowed}
+  /* password cell */
+  .pw{display:flex;align-items:center;gap:6px}
+  .pw input{border:1px solid var(--line);border-radius:8px;padding:7px 9px;font:600 12.5px 'Plus Jakarta Sans';width:130px}
+  .pw input:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-soft)}
+  .pw button{border:1px solid var(--line);background:#f8fafc;border-radius:7px;width:30px;height:32px;cursor:pointer;font-size:13px}
+  .cred{font-family:ui-monospace,monospace;background:#f1f5f9;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}.window{gap:12px}.mod-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="logo">S</div>
+    <div><b>Sprout<span>Song</span></b><small>Explore · Engage · Flourish</small></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-view="detail" onclick="switchView('detail')">Request &amp; Provisioning</button>
+    <button class="tab" data-view="manage" onclick="switchView('manage')">Trial Access Management</button>
+  </div>
+
+  <!-- ============ VIEW 1: DETAIL + PROVISION ============ -->
+  <div id="detail">
+    <div class="card">
+      <div class="head">
+        <div>
+          <h2>Gyanmanjari Vidyapith</h2>
+          <p>rudradodiya4321@gmail.com · 9106803262 · Bhavnagar, Gujarat</p>
+        </div>
+        <div style="text-align:right">
+          <span class="pill green"><span class="dot"></span>Submitted</span>
+          <div style="font-size:11px;color:var(--slate-400);margin-top:6px">20 May 2026</div>
+        </div>
+      </div>
+
+      <!-- existing captured info, condensed -->
+      <div class="sec" style="border-bottom:1px solid var(--line)">
+        <div class="grid2" style="gap:28px">
+          <div>
+            <div class="label">🏫 School Profile</div>
+            <div class="field"><span class="k">Level</span><span class="v">Higher Secondary (11–12)</span></div>
+            <div class="field"><span class="k">Board</span><span class="v">GSEB · State</span></div>
+            <div class="field"><span class="k">Management</span><span class="v">Private Unaided</span></div>
+          </div>
+          <div>
+            <div class="label">⚙️ Operations</div>
+            <div class="field"><span class="k">Students</span><span class="v">1000 – 2000</span></div>
+            <div class="field"><span class="k">Teachers (total)</span><span class="v">30</span></div>
+            <div class="field"><span class="k">Current System</span><span class="v">Excel / Google Sheets</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW: requested modules (from Step 4 of the demo form) -->
+      <div class="sec" style="border-bottom:1px solid var(--line)">
+        <div class="label">📦 Requested Modules <span style="color:var(--slate-400);font-weight:600;text-transform:none;letter-spacing:0">— from Step 4 of the demo form</span></div>
+        <p style="margin:0 0 14px;font-size:12.5px;color:var(--slate-500)">
+          These are the module families the school ticked. Toggle which ones to switch on for the trial —
+          e.g. a school that only wants <b>ERP</b> or only <b>AI Tools</b> gets just those.
+        </p>
+        <div class="mod-grid" id="modGrid"></div>
+        <div class="note" id="modSummary"></div>
+      </div>
+
+      <!-- NEW: roles & access -->
+      <div class="sec" style="border-bottom:1px solid var(--line)">
+        <div class="label">👥 Roles &amp; Trial Access Requested</div>
+        <p style="margin:0 0 14px;font-size:12.5px;color:var(--slate-500)">
+          School requested these roles. For the trial you grant a capped number of seats per role —
+          default <b>1 each</b>, never exceeding what was requested.
+        </p>
+        <table>
+          <thead><tr><th>Role</th><th>Requested</th><th>Trial seats</th><th>Login email</th><th>Password (set by SproutSong)</th></tr></thead>
+          <tbody id="roleRows"></tbody>
+        </table>
+      </div>
+
+      <!-- NEW: trial window -->
+      <div class="sec" style="border-bottom:1px solid var(--line)">
+        <div class="label">🗓️ Trial Window</div>
+        <div class="window">
+          <div class="ig"><label>Start date</label><input type="date" id="startDate"></div>
+          <div class="ig"><label>Duration</label>
+            <select id="duration">
+              <option value="7" selected>7 days (standard)</option>
+              <option value="14">14 days</option>
+              <option value="3">3 days</option>
+            </select>
+          </div>
+          <div class="endbox"><div class="k">Auto-expires on</div><div class="v" id="endDate">—</div></div>
+        </div>
+        <div class="note">
+          On expiry a scheduled job <b>deactivates</b> every trial account (it does not delete data),
+          so access is revoked automatically even if no one terminates it manually. Login is also blocked
+          server-side as a second check.
+        </div>
+      </div>
+
+      <!-- provision -->
+      <div class="sec">
+        <div class="toolbar" style="justify-content:space-between">
+          <div id="provSummary" style="font-size:13px;color:var(--slate-500)"></div>
+          <button class="btn primary" id="provBtn" onclick="provision()">⚡ Create Trial Logins</button>
+        </div>
+
+        <div id="provisioned" style="margin-top:18px;display:none">
+          <div class="label" style="color:var(--green)">✅ Provisioned Accounts</div>
+          <div id="acctList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ VIEW 2: MANAGE ============ -->
+  <div id="manage" style="display:none">
+    <div class="card">
+      <div class="head">
+        <div><h2>Trial Access Management</h2><p>All live trial accounts across schools · auto-expiry enforced daily</p></div>
+        <div class="toolbar">
+          <button class="btn ghost tiny" onclick="fastForward(1)">⏩ Simulate +1 day</button>
+          <button class="btn ghost tiny" onclick="expireNow()">Expire trial now</button>
+        </div>
+      </div>
+      <div class="sec">
+        <div id="manageEmpty" class="empty">No trial provisioned yet. Provision one from the <b>Request &amp; Provisioning</b> tab.</div>
+        <div id="manageList"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ---------- data model (mirrors backend tables) ---------- */
+const ROLES = [
+  {role:'Principal',     desc:'Full admin · all modules',        requested:1, cap:1},
+  {role:'Coordinator',   desc:'Academic oversight',              requested:2, cap:1},
+  {role:'Teacher',       desc:'Class, attendance, homework',     requested:5, cap:1},
+  {role:'Accountant',    desc:'Fees & dues',                     requested:1, cap:1},
+  {role:'Librarian',     desc:'Library module',                  requested:1, cap:1},
+];
+const SCHOOL = {name:'Gyanmanjari Vidyapith', domain:'gyanmanjari'};
+
+/* module families from Step 4 — `requested` = ticked by the school in the form */
+const MODULES = [
+  {key:'academic',  name:'Academic & Learning',     requested:true,  feats:'Exam & Result Automation, Homework, Question Paper Gen, Learning Gap ID'},
+  {key:'staff',     name:'Teacher & Staff',          requested:true,  feats:'Attendance, Performance Tracking, Leave & Substitute, Payroll'},
+  {key:'engage',    name:'Parent & Student Engagement', requested:false, feats:'Parent App, Progress Reports, Behaviour Tracking, Fee Reminders'},
+  {key:'erp',       name:'ERP / Operations & Admin',  requested:true,  feats:'Student Attendance, Timetable, Fees & Accounting, Transport, Hostel, Library'},
+  {key:'ai',        name:'AI Tools',                  requested:false, feats:'Performance Prediction, Risk Alerts, Career Guidance, AI Chat Assistant'},
+  {key:'analytics', name:'Analytics & Reports',       requested:true,  feats:'Performance Analytics, Class Health, Fee Analytics, Growth Reports'},
+];
+
+let state = { seats:{}, assignees:{}, passwords:{}, modules:{}, trial:null, accounts:[] };
+ROLES.forEach(r=>{ state.seats[r.role]=Math.min(r.cap,r.requested); state.assignees[r.role]=''; state.passwords[r.role]=''; });
+MODULES.forEach(m=>{ state.modules[m.key]=m.requested; });  // default: enable what they asked for
+
+/* ---------- render module families ---------- */
+function genPwd(){const c='abcdefghjkmnpqrstuvwxyz23456789';let p='';for(let i=0;i<10;i++)p+=c[Math.floor(Math.random()*c.length)];return p[0].toUpperCase()+p.slice(1)+'@'+Math.floor(Math.random()*90+10);}
+function renderModules(){
+  document.getElementById('modGrid').innerHTML = MODULES.map(m=>{
+    const on=state.modules[m.key];
+    return `<div class="mod ${on?'req':'off'}">
+      <div class="mod-top">
+        <div class="mod-name">${m.name} ${m.requested?'<small>· requested</small>':'<small>· not requested</small>'}</div>
+        <label class="sw"><input type="checkbox" ${on?'checked':''} onchange="state.modules['${m.key}']=this.checked;renderModules()"><span class="tr"></span></label>
+      </div>
+      <div class="mod-feat">${m.feats}</div>
+    </div>`;
+  }).join('');
+  const on=MODULES.filter(m=>state.modules[m.key]).map(m=>m.name.replace(/ \/.*| &.*/,''));
+  document.getElementById('modSummary').innerHTML =
+    on.length? `Trial will enable: <b>${on.join(', ')}</b>. Everything else stays locked for this school.`
+             : `No modules enabled — the trial would have nothing switched on.`;
+}
+
+/* ---------- render roles ---------- */
+function renderRoles(){
+  const tb = document.getElementById('roleRows');
+  tb.innerHTML = ROLES.map(r=>{
+    const s = state.seats[r.role], maxAllowed = Math.min(r.cap, r.requested);
+    return `<tr>
+      <td><div class="rolename">${r.role}</div><div class="roledesc">${r.desc}</div></td>
+      <td><span class="count">${r.requested}</span></td>
+      <td>
+        <div class="stepper">
+          <button onclick="bump('${r.role}',-1)" ${s<=0?'disabled':''}>–</button>
+          <span>${s}</span>
+          <button onclick="bump('${r.role}',1)" ${s>=maxAllowed?'disabled':''}>+</button>
+        </div>
+        <div class="cap">max ${maxAllowed} for trial</div>
+      </td>
+      <td><input class="assignee" placeholder="name@school.com"
+            value="${state.assignees[r.role]}"
+            oninput="state.assignees['${r.role}']=this.value"></td>
+      <td>
+        <div class="pw">
+          <input id="pw_${r.role}" type="text" placeholder="set password"
+            value="${state.passwords[r.role]}"
+            oninput="state.passwords['${r.role}']=this.value">
+          <button title="Generate" onclick="state.passwords['${r.role}']=genPwd();renderRoles()">🎲</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+  const total = Object.values(state.seats).reduce((a,b)=>a+b,0);
+  const missingPw = ROLES.some(r=> state.seats[r.role]>0 && !state.passwords[r.role].trim());
+  document.getElementById('provSummary').innerHTML =
+    `<b>${total}</b> trial seat${total!==1?'s':''} across `+
+    `<b>${Object.values(state.seats).filter(v=>v>0).length}</b> role(s).`+
+    (missingPw?` <span style="color:var(--amber);font-weight:700">Set a password for every seated role.</span>`:'');
+  document.getElementById('provBtn').disabled = total===0 || missingPw;
+}
+function bump(role,d){
+  const r = ROLES.find(x=>x.role===role), maxAllowed=Math.min(r.cap,r.requested);
+  state.seats[role]=Math.max(0,Math.min(maxAllowed, state.seats[role]+d));
+  renderRoles();
+}
+
+/* ---------- trial window ---------- */
+function recalcEnd(){
+  const sd = document.getElementById('startDate').value;
+  const dur = +document.getElementById('duration').value;
+  if(!sd){document.getElementById('endDate').textContent='—';return;}
+  const end = new Date(sd); end.setDate(end.getDate()+dur);
+  document.getElementById('endDate').textContent =
+    end.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+(function initDate(){
+  const t=new Date(); document.getElementById('startDate').value=t.toISOString().slice(0,10);
+  document.getElementById('startDate').onchange=recalcEnd;
+  document.getElementById('duration').onchange=recalcEnd;
+  recalcEnd();
+})();
+
+/* ---------- provision ---------- */
+function provision(){
+  const sd=document.getElementById('startDate').value, dur=+document.getElementById('duration').value;
+  const end=new Date(sd); end.setDate(end.getDate()+dur); end.setHours(23,59,59);
+  state.trial={start:new Date(sd), end, duration:dur,
+    modules:MODULES.filter(m=>state.modules[m.key]).map(m=>m.name)};
+  state.accounts=[];
+  ROLES.forEach(r=>{
+    for(let i=1;i<=state.seats[r.role];i++){
+      const slug=r.role.toLowerCase();
+      const email=state.assignees[r.role] || `${slug}@${SCHOOL.domain}.trial.sproutsong.com`;
+      state.accounts.push({
+        id:'ta_'+Math.random().toString(36).slice(2,8),
+        role:r.role, email, password:state.passwords[r.role], reveal:false,
+        status:'active', expires:new Date(end)
+      });
+    }
+  });
+  document.getElementById('provisioned').style.display='block';
+  renderAccounts(); renderManage();
+  document.getElementById('provBtn').textContent='✓ Logins created — Re-provision';
+}
+
+function renderAccounts(){
+  document.getElementById('acctList').innerHTML = state.accounts.map(a=>{
+    const dead = a.status==='terminated'||a.status==='expired';
+    const badge = a.status==='active'?'<span class="pill green"><span class="dot"></span>Active</span>'
+      : a.status==='terminated'?'<span class="pill slate">Terminated</span>'
+      : '<span class="pill red">Expired</span>';
+    const pwShown = a.reveal? a.password : '••••••••';
+    return `<div class="acct ${dead?'dead':''}">
+      <div class="ico">${a.role[0]}</div>
+      <div class="meta">
+        <div class="em">${a.email}</div>
+        <div class="sub">${a.role} · password: <span class="cred">${pwShown}</span>
+          <button class="btn ghost tiny" style="padding:1px 7px" onclick="toggleReveal('${a.id}')">${a.reveal?'hide':'show'}</button>
+        </div>
+      </div>
+      <div class="right">
+        ${badge}
+        ${!dead?`<button class="btn danger tiny" onclick="terminate('${a.id}')">Terminate</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleReveal(id){const a=state.accounts.find(x=>x.id===id);a.reveal=!a.reveal;renderAccounts();}
+function terminate(id){const a=state.accounts.find(x=>x.id===id);a.status='terminated';renderAccounts();renderManage();}
+
+/* ---------- management view ---------- */
+let now = new Date();
+function renderManage(){
+  const list=document.getElementById('manageList'), empty=document.getElementById('manageEmpty');
+  if(!state.accounts.length){empty.style.display='block';list.innerHTML='';return;}
+  empty.style.display='none';
+  list.innerHTML = state.accounts.map(a=>{
+    const dead=a.status==='terminated'||a.status==='expired';
+    const msLeft=a.expires-now, dayMs=864e5;
+    const total=state.trial.duration*dayMs;
+    const pct=Math.max(0,Math.min(100, (msLeft/total)*100));
+    const daysLeft=Math.ceil(msLeft/dayMs);
+    let barCls='', txt;
+    if(dead){txt=a.status==='expired'?'Expired — access revoked':'Manually terminated';}
+    else if(daysLeft<=1){barCls='crit';txt=`Less than a day left`;}
+    else if(daysLeft<=2){barCls='warn';txt=`${daysLeft} days left · reminder email queued`;}
+    else{txt=`${daysLeft} days left`;}
+    return `<div class="acct ${dead?'dead':''}">
+      <div class="ico">${a.role[0]}</div>
+      <div class="meta">
+        <div class="em">${a.email}</div>
+        <div class="sub">${SCHOOL.name} · ${a.role}</div>
+        <div class="bar ${barCls}"><i style="width:${dead?0:pct}%"></i></div>
+      </div>
+      <div class="right" style="flex-direction:column;align-items:flex-end;gap:6px">
+        <span class="pill ${dead?(a.status==='expired'?'red':'slate'):(daysLeft<=2?'amber':'green')}">${txt}</span>
+        ${!dead?`<div class="toolbar">
+            <button class="btn ghost tiny" onclick="extend('${a.id}')">+7 days</button>
+            <button class="btn danger tiny" onclick="terminate('${a.id}')">Terminate</button>
+          </div>`:`<button class="btn ghost tiny" onclick="convert()">Convert to paid</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+function extend(id){const a=state.accounts.find(x=>x.id===id);a.expires=new Date(a.expires.getTime()+7*864e5);renderManage();}
+function convert(){alert('→ Opens conversion flow: pick the paid plan & modules, lift seat caps to the requested counts, keep all trial data.');}
+function fastForward(d){
+  now=new Date(now.getTime()+d*864e5);
+  state.accounts.forEach(a=>{ if(a.status!=='terminated' && a.expires<now) a.status='expired'; });
+  renderManage(); renderAccounts();
+}
+function expireNow(){
+  now=new Date((state.trial?state.trial.end:new Date()).getTime()+1000);
+  state.accounts.forEach(a=>{ if(a.status!=='terminated') a.status='expired'; });
+  renderManage(); renderAccounts();
+}
+
+/* ---------- view switch ---------- */
+function switchView(v){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
+  document.getElementById('detail').style.display = v==='detail'?'block':'none';
+  document.getElementById('manage').style.display = v==='manage'?'block':'none';
+}
+renderRoles(); renderModules(); renderManage();
+</script>
+</body>
+</html>
