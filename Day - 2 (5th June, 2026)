@@ -1,0 +1,65 @@
+Next steps are to prepare the data sharing etc.. Part N and O so proceeding towards final steps for the documentation point of view.
+Monitoring, Security headers - please do a search about it..
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Uptime Kuma is a fancy, self-hosted, and open-source monitoring tool used to track the availability and health of your websites, APIs, databases, and servers. It features an intuitive, fast user interface and alerts you immediately when services go down.
+Core Features 
+
+* Monitor Anything: Track HTTP/HTTPS websites, TCP/UDP ports, DNS records, SSL certificates, Docker containers, and cron jobs. 
+* Instant Notifications: Receive alerts through dozens of integrated channels, including Discord, Slack, Telegram, email, and webhooks. 
+* Status Pages: Create beautiful, customizable, public or private status pages to keep your users or clients informed of service outages. 
+* Responsive Dashboard: View real-time status, historical uptime percentages, and response latency graphs in a clean layout. 
+
+Installation & Hosting 
+Uptime Kuma is designed to be lightweight and runs flawlessly on almost any system via Docker. 
+To deploy it on your server, simply run: 
+Once it is running on port , you can access your dashboard, create your admin account, and immediately start adding the services you want to monitor. 
+For official guides, advanced configuration (such as Docker Compose setups), or to try the live demo, visit the Uptime Kuma Official Website or browse the Uptime Kuma GitHub repository.
+
+This tool is good for monitoring and open source so we won't need premium.
+
+-
+
+Security Headers is a free online tool created by Scott Helme (now part of Snyk) that scans and evaluates the HTTP response headers of any website. It checks for critical security features that protect users against attacks like cross-site scripting (XSS), clickjacking, and data leaks.
+How It Works 
+
+* Automated Scanning: You simply enter a website's URL, and the tool fetches the server's HTTP headers in seconds. 
+* Letter Grading: It scores the site from A+ (all best-practice headers are enabled) to F (no security headers are implemented). 
+* Actionable Feedback: The site provides a detailed breakdown of which security headers are active, which are missing, and recommendations on how to configure them. 
+
+Key Headers Checked 
+The tool analyzes several important headers: 
+
+* Content Security Policy (CSP): Dictates which dynamic resources (like scripts and images) browsers are allowed to load. 
+* HTTP Strict Transport Security (HSTS): Forces browsers to connect exclusively over HTTPS. 
+* X-Frame-Options: Protects against clickjacking by preventing your site from being loaded in an iframe. 
+* X-Content-Type-Options: Prevents the browser from MIME-sniffing or executing files as code if they are mislabeled. 
+* Referrer-Policy: Controls how much information about the user's previous page is shared in the  header. 
+* Permissions-Policy: Allows you to selectively enable or disable browser features and APIs (like camera, microphone, or geolocation).  
+
+Who Should Use It ?
+It is an essential resource for web developers, system administrators, and cybersecurity professionals looking to verify and improve their web application's security posture.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Learn to use Uptime Kuma. Do necessary documentation.
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Made Uptime_Kuma_Guide.docx
+
+Summary:-
+
+Uptime Kuma is a powerful self-hosted monitoring tool designed to track the availability and response times of your websites, servers, and network services. Instead of tracking internal metrics (like CPU or memory load), it verifies that services are actively responding. 
+You can monitor a wide variety of endpoints, including: 
+
+* HTTP/HTTPS URLs: Websites, APIs, and web applications. 
+* Keyword & JSON Checks: Scan a webpage for a specific text string, or verify JSON payloads against specific values to ensure they return the correct data. 
+* TCP/UDP Ports: Verify that specific ports (like 80 for HTTP or 22 for SSH) are open and accepting connections. 
+* Ping (ICMP): Check the general reachability and latency of IP addresses or domain names. 
+* DNS Records: Ensure your DNS resolves correctly. 
+* Docker Containers: Monitor the status and uptime of individual containers. 
+* Databases: Check connectivity to database systems. 
+* Game Servers: Track the availability and status of servers like Steam. 
+* SSL Certificates: Monitor domains to get alerted before your HTTPS/SSL certificates expire.
