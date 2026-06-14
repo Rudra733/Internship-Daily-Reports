@@ -1,0 +1,11 @@
+I completed scanning the URL overnight. The scan is totally completed.
+
+So next I made a report for it.
+
+Now, it is not advisable to use AI tools to make a report of the OpenVAS results. These may be accessed by the AI tool to train the model, which puts sensitive data like the vulnerabilities of the web application at a high risk. So, I made a report manually. It includes the screenshots of all 85 results and 32 vulnerabilities.
+
+There is no other way to import the reports.
+
+The report will not be attached here, in this repository as it is confidential data of Sproutmentors.
+
+-------------------------------------------------------------------------------------------------------------------------------
