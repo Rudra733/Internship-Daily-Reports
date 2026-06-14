@@ -1,0 +1,23 @@
+Tasks:- 
+
+Part A and Part B
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Created :-
+
+1) Eartigo_PartA_DataInventory_SecurityGuide
+2) Eartigo - Part A Questions
+
+This document answers the following questions:- 
+The team's data inventory must answer the following questions for every data type:
+What data is collected?
+Why is it collected? (purpose)
+Where is it stored? (database, cloud bucket, third-party)
+Who can access it? (role, department)
+How long is it retained? (retention policy)
+Is it shared with any third party?
+Does it cross India's borders? (data localisation check)
+Is consent captured for this specific use?
+
+3) Eartigo Part - B
